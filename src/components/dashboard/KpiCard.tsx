@@ -9,38 +9,33 @@ export default function KpiCard({ title, value, change, icon, color }: KpiData) 
   const isPositive = change >= 0;
   
   return (
-    <div className="bg-white overflow-hidden shadow rounded-lg">
-      <div className="p-5">
-        <div className="flex items-center">
-          <div className={`flex-shrink-0 rounded-md p-3 ${color.split(' ')[0]}`}>
-            <Icon className="h-6 w-6" />
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+      <div className="p-6">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-gray-600 mb-1">
+              {title}
+            </p>
+            <div className="flex items-baseline gap-2">
+              <h3 className="text-3xl font-bold text-gray-900">
+                {value}
+              </h3>
+              <div
+                className={`flex items-center gap-1 text-sm font-semibold ${
+                  isPositive ? 'text-green-600' : 'text-red-600'
+                }`}
+              >
+                {isPositive ? (
+                  <ArrowUp className="h-4 w-4" />
+                ) : (
+                  <ArrowDown className="h-4 w-4" />
+                )}
+                <span>{Math.abs(change)}%</span>
+              </div>
+            </div>
           </div>
-          <div className="ml-5 w-0 flex-1">
-            <dl>
-              <dt className="text-sm font-medium text-gray-500 truncate">
-                {title}
-              </dt>
-              <dd className="flex items-baseline">
-                <div className="text-2xl font-semibold text-gray-900">
-                  {value}
-                </div>
-                <div
-                  className={`ml-2 flex items-baseline text-sm font-semibold ${
-                    isPositive ? 'text-green-600' : 'text-red-600'
-                  }`}
-                >
-                  {isPositive ? (
-                    <ArrowUp className="self-center flex-shrink-0 h-4 w-4 text-green-500" />
-                  ) : (
-                    <ArrowDown className="self-center flex-shrink-0 h-4 w-4 text-red-500" />
-                  )}
-                  <span className="sr-only">
-                    {isPositive ? 'Increased' : 'Decreased'} by
-                  </span>
-                  {Math.abs(change)}%
-                </div>
-              </dd>
-            </dl>
+          <div className={`flex-shrink-0 rounded-lg p-3 ${color.split(' ')[0]}`}>
+            <Icon className={`h-6 w-6 ${color.split(' ')[1]}`} />
           </div>
         </div>
       </div>

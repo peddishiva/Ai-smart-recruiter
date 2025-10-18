@@ -48,10 +48,16 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <Providers>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 flex">
+        {/* Sidebar - Fixed position, independent */}
         <Sidebar />
-        <div className="md:pl-64 flex flex-col min-h-screen">
+        
+        {/* Main content area - Independent from sidebar */}
+        <div className="flex-1 flex flex-col md:ml-64">
+          {/* Header - Independent, spans full width of content area */}
           <Header />
+          
+          {/* Main content - Independent */}
           <main className="flex-1 bg-gray-50">
             {children}
           </main>

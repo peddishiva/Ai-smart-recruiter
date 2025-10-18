@@ -18,23 +18,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Remove browser extension attributes immediately
-              (function() {
-                const attrs = ['crxemulator', 'data-crx', 'data-extension'];
-                attrs.forEach(function(attr) {
-                  if (document.documentElement.hasAttribute(attr)) {
-                    document.documentElement.removeAttribute(attr);
-                  }
-                });
-              })();
-            `,
-          }}
-        />
-      </head>
       <body 
         className={`${inter.className} bg-gray-50 h-full`} 
         suppressHydrationWarning

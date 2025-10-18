@@ -9,8 +9,8 @@ const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = (props: any) => {
   const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN) * 1.2;
-  const y = cy + radius * Math.sin(-midAngle * RADIAN) * 1.2;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
   return (
     <text 
@@ -19,7 +19,7 @@ const renderCustomizedLabel = (props: any) => {
       fill="white" 
       textAnchor="middle" 
       dominantBaseline="central"
-      className="text-xs font-medium"
+      className="text-sm font-bold"
     >
       {`${(percent * 100).toFixed(0)}%`}
     </text>
@@ -32,31 +32,38 @@ interface ScoreChartProps {
 
 export default function ScoreChart({ data }: ScoreChartProps) {
   return (
-    <div className="h-64">
+    <div className="h-80">
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={data}
             cx="50%"
-            cy="50%"
+            cy="45%"
             labelLine={false}
             label={renderCustomizedLabel}
-            outerRadius={80}
+            outerRadius={100}
+            innerRadius={0}
             fill="#8884d8"
             dataKey="value"
+            paddingAngle={2}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.fill} />
             ))}
           </Pie>
           <Tooltip 
-            formatter={(value: number) => [`${value}%`, 'Candidates']}
+            formatter={(value: number) => [`${value}%`, 'Score Range']}
             contentStyle={{
               backgroundColor: 'white',
-              borderRadius: '0.5rem',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-              border: 'none',
-              padding: '0.5rem 1rem',
+              borderRadius: '0.75rem',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #e5e7eb',
+              padding: '0.75rem 1rem',
+            }}
+            labelStyle={{
+              color: '#111827',
+              fontWeight: '600',
+              fontSize: '0.875rem',
             }}
           />
           <Legend 
@@ -64,13 +71,15 @@ export default function ScoreChart({ data }: ScoreChartProps) {
             verticalAlign="bottom" 
             align="center"
             wrapperStyle={{
-              paddingTop: '1rem',
+              paddingTop: '1.5rem',
             }}
             formatter={(value, entry, index) => (
-              <span className="text-gray-500 text-sm">
+              <span className="text-gray-700 text-sm font-medium">
                 {data[index].name}: {data[index].value}%
               </span>
             )}
+            iconType="circle"
+            iconSize={10}
           />
         </PieChart>
       </ResponsiveContainer>
