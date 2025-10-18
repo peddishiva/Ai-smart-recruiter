@@ -1,7 +1,7 @@
 // Global error handler to suppress hydration warnings
 if (typeof window !== 'undefined') {
   const originalError = console.error;
-  console.error = (...args: any[]) => {
+  console.error = (...args: unknown[]) => {
     // Suppress hydration warnings caused by browser extensions
     if (
       typeof args[0] === 'string' &&

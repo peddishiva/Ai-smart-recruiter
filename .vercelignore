@@ -1,0 +1,13 @@
+# Documentation files
+*.md
+TROUBLESHOOTING.md
+PROJECT_SUMMARY.md
+QUICK_REFERENCE.md
+HYDRATION_FIX.md
+HYDRATION_ERROR_FIX.md
+FINAL_SOLUTION.md
+
+# Development files
+.vscode/
+.idea/
+*.log

@@ -5,7 +5,7 @@ import { KpiData } from '@/types';
 import * as LucideIcons from 'lucide-react';
 
 export default function KpiCard({ title, value, change, icon, color }: KpiData) {
-  const Icon = (LucideIcons as any)[icon] || LucideIcons.Users;
+  const Icon = (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[icon] || LucideIcons.Users;
   const isPositive = change >= 0;
   
   return (

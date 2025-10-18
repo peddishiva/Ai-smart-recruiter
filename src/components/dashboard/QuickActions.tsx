@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, Upload, Search, UserPlus, FileText, Mail, Filter } from 'lucide-react';
+import { Upload, Search, UserPlus, FileText, Mail, Filter } from 'lucide-react';
 
 const actions = [
   {

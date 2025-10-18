@@ -4,16 +4,10 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recha
 import { ChartDataPoint } from '@/types';
 
 const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ 
-  cx, 
-  cy, 
-  midAngle, 
-  innerRadius, 
-  outerRadius, 
-  percent, 
-  index,
-  name
-}: any) => {
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderCustomizedLabel = (props: any) => {
+  const { cx, cy, midAngle, innerRadius, outerRadius, percent } = props;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN) * 1.2;
   const y = cy + radius * Math.sin(-midAngle * RADIAN) * 1.2;
@@ -72,7 +66,7 @@ export default function ScoreChart({ data }: ScoreChartProps) {
             wrapperStyle={{
               paddingTop: '1rem',
             }}
-            formatter={(value, entry: any, index) => (
+            formatter={(value, entry, index) => (
               <span className="text-gray-500 text-sm">
                 {data[index].name}: {data[index].value}%
               </span>
