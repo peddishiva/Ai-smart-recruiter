@@ -22,3 +22,58 @@ export interface Alert {
   priority: 'high' | 'medium' | 'low';
   read: boolean;
 }
+
+export type CandidateStatus =
+  | 'new'
+  | 'reviewing'
+  | 'shortlisted'
+  | 'rejected'
+  | 'interview'
+  | 'hired';
+
+export interface ActiveJobContext {
+  title: string;
+  department: string;
+  location: string;
+  applicants: number;
+  openRoles: number;
+  updatedAt: string;
+}
+
+export interface RecommendedCandidate {
+  id: string;
+  name: string;
+  role: string;
+  matchScore: number;
+  status: CandidateStatus;
+  topSkills: string[];
+  gaps: string[];
+  summaryReason: string;
+  evidence: string;
+  lastActivity: string;
+}
+
+export interface PipelineStage {
+  id: CandidateStatus;
+  label: string;
+  count: number;
+  description: string;
+  tone: 'blue' | 'green' | 'amber' | 'red' | 'slate';
+}
+
+export interface ActivityItem {
+  id: string;
+  title: string;
+  description: string;
+  time: string;
+  tone: 'blue' | 'green' | 'amber' | 'slate';
+}
+
+export interface QuickAction {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  href?: string;
+  availability: 'available' | 'phase-2' | 'phase-3' | 'phase-4';
+}

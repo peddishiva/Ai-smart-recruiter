@@ -1,7 +1,8 @@
 'use client';
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { ChartDataPoint } from '@/types';
+import { useChartSize } from './useChartSize';
 
 const RADIAN = Math.PI / 180;
 
@@ -31,10 +32,12 @@ interface ScoreChartProps {
 }
 
 export default function ScoreChart({ data }: ScoreChartProps) {
+  const chart = useChartSize();
+
   return (
-    <div className="h-80">
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart>
+    <div ref={chart.ref} className="h-80 min-w-0 w-full">
+      {chart.ready ? (
+        <PieChart width={chart.width} height={chart.height}>
           <Pie
             data={data}
             cx="50%"
@@ -82,7 +85,9 @@ export default function ScoreChart({ data }: ScoreChartProps) {
             iconSize={10}
           />
         </PieChart>
-      </ResponsiveContainer>
+      ) : (
+        <div className="h-full w-full rounded-lg bg-slate-50" aria-hidden="true" />
+      )}
     </div>
   );
 }

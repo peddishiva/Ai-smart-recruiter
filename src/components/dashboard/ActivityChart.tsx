@@ -1,6 +1,7 @@
 'use client';
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { useChartSize } from './useChartSize';
 
 interface ActivityData {
   name: string;
@@ -13,10 +14,14 @@ interface ActivityChartProps {
 }
 
 export default function ActivityChart({ data }: ActivityChartProps) {
+  const chart = useChartSize();
+
   return (
-    <div className="h-80">
-      <ResponsiveContainer width="100%" height="100%">
+    <div ref={chart.ref} className="h-80 min-w-0 w-full">
+      {chart.ready ? (
         <LineChart
+          width={chart.width}
+          height={chart.height}
           data={data}
           margin={{
             top: 20,
@@ -81,7 +86,9 @@ export default function ActivityChart({ data }: ActivityChartProps) {
             activeDot={{ r: 6, strokeWidth: 0 }}
           />
         </LineChart>
-      </ResponsiveContainer>
+      ) : (
+        <div className="h-full w-full rounded-lg bg-slate-50" aria-hidden="true" />
+      )}
     </div>
   );
 }

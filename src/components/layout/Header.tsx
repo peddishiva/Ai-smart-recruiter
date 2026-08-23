@@ -1,51 +1,84 @@
 'use client';
 
-import { Search, Bell } from 'lucide-react';
+import { Bell, Menu, Search } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
-export default function Header() {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+const pageTitles: Record<string, { title: string; description: string }> = {
+  '/': {
+    title: 'Overview',
+    description: 'Candidate attention and demo recommendations',
+  },
+  '/upload-resumes': {
+    title: 'Upload Resumes',
+    description: 'Demo upload workflow',
+  },
+  '/reports': {
+    title: 'Reports',
+    description: 'Demo analytics and exports',
+  },
+};
+
+export default function Header({ onMenuClick }: HeaderProps) {
+  const pathname = usePathname();
+  const page = pageTitles[pathname] ?? pageTitles['/'];
+
   return (
-    <div className="sticky top-0 z-10 flex-shrink-0 h-16 bg-white shadow-sm border-b border-gray-200">
-      <div className="h-full px-6 lg:px-8 flex items-center justify-between gap-4">
-        {/* Search bar - takes available space on the left */}
-        <div className="flex-1 max-w-md">
+    <header className="sticky top-0 z-10 h-16 flex-shrink-0 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+      <div className="flex h-full items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 items-center gap-3">
+          <button
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-950 focus-visible:ring-2 focus-visible:ring-blue-500 md:hidden"
+            aria-label="Open navigation"
+            onClick={onMenuClick}
+          >
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-slate-950">{page.title}</p>
+            <p className="hidden truncate text-xs text-slate-500 sm:block">{page.description}</p>
+          </div>
+        </div>
+
+        <div className="hidden max-w-sm flex-1 sm:block">
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" aria-hidden="true" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <Search className="h-5 w-5 text-slate-400" aria-hidden="true" />
             </div>
             <input
               id="search"
               name="search"
-              className="block w-full bg-gray-50 py-2 pl-10 pr-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
-              placeholder="Search"
+              className="block w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-10 pr-3 text-sm text-slate-500 placeholder-slate-400"
+              placeholder="Search candidates coming in Phase 2"
               type="search"
+              disabled
+              aria-label="Search candidates coming in Phase 2"
             />
           </div>
         </div>
         
-        {/* Right side - notifications and user profile */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <button
             type="button"
-            className="p-2 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
-            aria-label="View notifications"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 disabled:cursor-not-allowed disabled:opacity-60"
+            aria-label="Notifications coming in Phase 2"
+            title="Notifications coming in Phase 2"
+            disabled
           >
             <Bell className="h-5 w-5" aria-hidden="true" />
           </button>
 
-          <button
-            type="button"
-            className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            id="user-menu"
-            aria-expanded="false"
-            aria-haspopup="true"
-            aria-label="User menu"
-          >
-            <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <span className="text-blue-600 font-semibold text-sm">JD</span>
-            </div>
-          </button>
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100">
+            <span className="text-sm font-semibold text-blue-700" aria-label="John Doe">
+              JD
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </header>
   );
 }

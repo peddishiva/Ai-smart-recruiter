@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'AI Smart Recruiter',
-  description: 'AI-powered recruitment dashboard',
+  description: 'AI-powered recruitment workspace prototype',
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
       <body 
-        className={`${inter.className} bg-gray-50 h-full`} 
+        className={`${inter.className} h-full bg-slate-50`} 
         suppressHydrationWarning
       >
         <ClientLayout>{children}</ClientLayout>

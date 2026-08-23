@@ -1,22 +1,43 @@
 @import "tailwindcss";
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
+@theme {
+  --color-app-background: #f8fafc;
+  --color-app-surface: #ffffff;
+  --color-app-foreground: #0f172a;
+  --color-app-muted: #f1f5f9;
+  --color-app-border: #e2e8f0;
+  --color-app-primary: #2563eb;
+  --color-app-primary-foreground: #ffffff;
+  --radius-app: 0.5rem;
+  --shadow-app: 0 1px 2px 0 rgb(15 23 42 / 0.06);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+:root {
+  --foreground-rgb: 15, 23, 42;
+  --background-rgb: 248, 250, 252;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
+  background: rgb(var(--background-rgb));
+  min-width: 0;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }
 
 /* Custom scrollbar */
@@ -46,7 +67,7 @@ body {
 
 .recharts-default-tooltip {
   border: none !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
   border-radius: 0.5rem;
   background-color: white !important;
   padding: 0.5rem 1rem !important;

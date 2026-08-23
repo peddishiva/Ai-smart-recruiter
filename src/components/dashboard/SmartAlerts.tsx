@@ -2,6 +2,7 @@
 
 import { Alert } from '@/types';
 import { AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { EmptyState } from '@/components/ui';
 
 interface SmartAlertsProps {
   alerts?: Alert[];
@@ -10,9 +11,10 @@ interface SmartAlertsProps {
 export default function SmartAlerts({ alerts = [] }: SmartAlertsProps) {
   if (alerts.length === 0) {
     return (
-      <div className="text-center py-4">
-        <p className="text-sm text-gray-500">No new alerts</p>
-      </div>
+      <EmptyState
+        title="No attention items"
+        description="Demo alerts will appear here when candidates need review."
+      />
     );
   }
 
@@ -30,22 +32,22 @@ export default function SmartAlerts({ alerts = [] }: SmartAlertsProps) {
 
   return (
     <div className="flow-root">
-      <ul className="divide-y divide-gray-200">
+      <ul className="divide-y divide-slate-200">
         {alerts.map((alert) => (
-          <li key={alert.id} className={`py-3 ${!alert.read ? 'bg-blue-50 -mx-3 px-3' : ''}`}>
-            <div className="flex items-center space-x-4">
+          <li key={alert.id} className={`py-4 ${!alert.read ? 'bg-blue-50/70 -mx-3 px-3' : ''}`}>
+            <div className="flex items-start gap-3">
               <div className="flex-shrink-0">
                 {getPriorityIcon(alert.priority)}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-semibold text-slate-950">
                   {alert.title}
                 </p>
-                <p className="text-sm text-gray-500 truncate">
+                <p className="mt-1 text-sm leading-6 text-slate-600">
                   {alert.message}
                 </p>
               </div>
-              <div className="inline-flex items-center text-xs text-gray-500">
+              <div className="inline-flex flex-shrink-0 items-center text-xs text-slate-500">
                 <Clock className="h-3.5 w-3.5 mr-1" />
                 {alert.time}
               </div>

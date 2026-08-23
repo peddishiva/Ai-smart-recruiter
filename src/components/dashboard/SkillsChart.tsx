@@ -1,17 +1,22 @@
 'use client';
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
 import { ChartDataPoint } from '@/types';
+import { useChartSize } from './useChartSize';
 
 interface SkillsChartProps {
   data: ChartDataPoint[];
 }
 
 export default function SkillsChart({ data }: SkillsChartProps) {
+  const chart = useChartSize();
+
   return (
-    <div className="h-80">
-      <ResponsiveContainer width="100%" height="100%">
+    <div ref={chart.ref} className="h-80 min-w-0 w-full">
+      {chart.ready ? (
         <BarChart
+          width={chart.width}
+          height={chart.height}
           data={data}
           margin={{
             top: 20,
@@ -60,7 +65,9 @@ export default function SkillsChart({ data }: SkillsChartProps) {
             ))}
           </Bar>
         </BarChart>
-      </ResponsiveContainer>
+      ) : (
+        <div className="h-full w-full rounded-lg bg-slate-50" aria-hidden="true" />
+      )}
     </div>
   );
 }

@@ -9,20 +9,20 @@ export default function KpiCard({ title, value, change, icon, color }: KpiData) 
   const isPositive = change >= 0;
   
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
       <div className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-600 mb-1">
+            <p className="mb-1 text-sm font-medium text-slate-600">
               {title}
             </p>
             <div className="flex items-baseline gap-2">
-              <h3 className="text-3xl font-bold text-gray-900">
+              <h3 className="text-3xl font-bold text-slate-950">
                 {value}
               </h3>
               <div
                 className={`flex items-center gap-1 text-sm font-semibold ${
-                  isPositive ? 'text-green-600' : 'text-red-600'
+                  isPositive ? 'text-emerald-600' : 'text-red-600'
                 }`}
               >
                 {isPositive ? (

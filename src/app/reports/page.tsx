@@ -2,6 +2,7 @@
 
 import { Download, TrendingUp, Users, FileText, Calendar, Filter } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { recruiterActivityData, skillsData } from '@/data/demo';
 
 // Dynamically import chart components
 const ActivityChart = dynamic(() => import('@/components/dashboard/ActivityChart'), { ssr: false });
@@ -10,14 +11,14 @@ const SkillsChart = dynamic(() => import('@/components/dashboard/SkillsChart'), 
 export default function ReportsPage() {
   const reportStats = [
     {
-      title: 'Total Reports Generated',
+      title: 'Demo Reports Generated',
       value: '156',
       change: '+12%',
       icon: FileText,
       color: 'bg-blue-50 text-blue-600',
     },
     {
-      title: 'Active Candidates',
+      title: 'Demo Candidates',
       value: '1,248',
       change: '+8%',
       icon: Users,
@@ -74,44 +75,36 @@ export default function ReportsPage() {
     },
   ];
 
-  const skillsData = [
-    { name: 'React', value: 45, fill: '#3b82f6' },
-    { name: 'Python', value: 38, fill: '#10b981' },
-    { name: 'AWS', value: 29, fill: '#f59e0b' },
-    { name: 'Node.js', value: 32, fill: '#8b5cf6' },
-    { name: 'SQL', value: 27, fill: '#ec4899' }
-  ];
-
-  const activityData = [
-    { name: 'Mon', scheduled: 4, completed: 2 },
-    { name: 'Tue', scheduled: 3, completed: 3 },
-    { name: 'Wed', scheduled: 5, completed: 4 },
-    { name: 'Thu', scheduled: 7, completed: 5 },
-    { name: 'Fri', scheduled: 6, completed: 3 },
-    { name: 'Sat', scheduled: 2, completed: 1 },
-    { name: 'Sun', scheduled: 1, completed: 0 }
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-8">
+    <div className="min-h-screen bg-slate-50">
+      <div className="mx-auto max-w-7xl px-4 pb-8 pt-6 sm:px-6 lg:px-8">
         
         {/* Page Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Reports</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              View and download recruitment analytics and reports
+            <h1 className="text-3xl font-bold text-slate-950">Reports</h1>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              View demo recruitment analytics. Backend export and filtering arrive in a later phase.
             </p>
           </div>
-          <div className="flex gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              className="flex cursor-not-allowed items-center gap-2 rounded-lg border border-slate-200 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-500"
+              disabled
+              title="Filtering is coming in Phase 4"
+            >
               <Filter className="h-4 w-4" />
-              Filter
+              Filter Phase 4
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+            <button
+              type="button"
+              className="flex cursor-not-allowed items-center gap-2 rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-500"
+              disabled
+              title="Export requires backend integration"
+            >
               <Download className="h-4 w-4" />
-              Export All
+              Export Phase 4
             </button>
           </div>
         </div>
@@ -121,15 +114,15 @@ export default function ReportsPage() {
           {reportStats.map((stat, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+              className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-600 mb-1">
+                  <p className="mb-1 text-sm font-medium text-slate-600">
                     {stat.title}
                   </p>
                   <div className="flex items-baseline gap-2">
-                    <h3 className="text-3xl font-bold text-gray-900">
+                    <h3 className="text-3xl font-bold text-slate-950">
                       {stat.value}
                     </h3>
                     <span className="text-sm font-semibold text-green-600">
@@ -146,29 +139,29 @@ export default function ReportsPage() {
         </div>
 
         {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Weekly Activity */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Weekly Activity</h2>
-            <ActivityChart data={activityData} />
+          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-6 text-lg font-semibold text-slate-950">Weekly Activity</h2>
+            <ActivityChart data={recruiterActivityData} />
           </div>
 
           {/* Skills Distribution */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Top Skills</h2>
+          <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="mb-6 text-lg font-semibold text-slate-950">Top Skills</h2>
             <SkillsChart data={skillsData} />
           </div>
         </div>
 
         {/* Recent Reports Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Reports</h2>
+        <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-200 px-6 py-4">
+            <h2 className="text-lg font-semibold text-slate-950">Recent Demo Reports</h2>
           </div>
           
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+              <thead className="bg-slate-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Report Name
@@ -190,9 +183,9 @@ export default function ReportsPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-slate-200 bg-white">
                 {recentReports.map((report) => (
-                  <tr key={report.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={report.id} className="transition-colors hover:bg-slate-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <FileText className="h-5 w-5 text-gray-400 mr-3" />
@@ -218,9 +211,14 @@ export default function ReportsPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-                      <button className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 ml-auto">
+                      <button
+                        type="button"
+                        className="ml-auto flex cursor-not-allowed items-center gap-1 font-medium text-slate-400"
+                        disabled
+                        title="Report downloads require backend integration"
+                      >
                         <Download className="h-4 w-4" />
-                        Download
+                        Phase 4
                       </button>
                     </td>
                   </tr>

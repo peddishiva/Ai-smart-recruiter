@@ -1,59 +1,66 @@
 'use client';
 
-import { Upload, Search, UserPlus, FileText, Mail, Filter } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
+import { quickActionsData } from '@/data/demo';
+import { QuickAction } from '@/types';
 
-const actions = [
-  {
-    title: 'Add Candidate',
-    icon: UserPlus,
-    color: 'bg-blue-100 text-blue-600',
-  },
-  {
-    title: 'Upload Resumes',
-    icon: Upload,
-    color: 'bg-purple-100 text-purple-600',
-  },
-  {
-    title: 'Search Candidates',
-    icon: Search,
-    color: 'bg-green-100 text-green-600',
-  },
-  {
-    title: 'Create Job',
-    icon: FileText,
-    color: 'bg-amber-100 text-amber-600',
-  },
-  {
-    title: 'Send Email',
-    icon: Mail,
-    color: 'bg-red-100 text-red-600',
-  },
-  {
-    title: 'Advanced Filters',
-    icon: Filter,
-    color: 'bg-indigo-100 text-indigo-600',
-  },
-];
+const phaseLabels: Record<QuickAction['availability'], string> = {
+  available: 'Available',
+  'phase-2': 'Phase 2',
+  'phase-3': 'Phase 3',
+  'phase-4': 'Phase 4',
+};
 
 export default function QuickActions() {
   return (
-    <div className="grid grid-cols-2 gap-3">
-      {actions.map((action) => {
-        const Icon = action.icon;
-        return (
-          <button
-            key={action.title}
-            className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
-          >
-            <div className={`p-2.5 rounded-lg ${action.color}`}>
-              <Icon className="h-5 w-5" />
-            </div>
-            <span className="mt-2 text-sm font-medium text-gray-700">
-              {action.title}
-            </span>
-          </button>
-        );
-      })}
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Primary Actions</CardTitle>
+        <CardDescription>Use the available demo actions; future workflows stay labeled.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {quickActionsData.map((action) => {
+            const Icon =
+              (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[
+                action.icon
+              ] ?? LucideIcons.Circle;
+            const isAvailable = action.availability === 'available';
+
+            return (
+              <div
+                key={action.id}
+                className="flex min-h-32 flex-col justify-between rounded-lg border border-slate-200 bg-white p-4"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
+                    </div>
+                    <Badge variant={isAvailable ? 'primary' : 'neutral'}>
+                      {phaseLabels[action.availability]}
+                    </Badge>
+                  </div>
+                  <h3 className="mt-3 text-sm font-semibold text-slate-950">{action.title}</h3>
+                  <p className="mt-1 text-sm leading-5 text-slate-500">{action.description}</p>
+                </div>
+                <div className="mt-4">
+                  {isAvailable ? (
+                    <Button href={action.href} variant="secondary" size="sm" className="w-full">
+                      Open
+                    </Button>
+                  ) : (
+                    <Button variant="muted" size="sm" className="w-full" disabled>
+                      Coming in {phaseLabels[action.availability]}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
   );
 }

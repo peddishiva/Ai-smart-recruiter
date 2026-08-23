@@ -6,6 +6,7 @@ import { useState } from 'react';
 export default function UploadResumesPage() {
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<Array<{
+    id: string;
     name: string;
     size: string;
     status: 'success' | 'error' | 'processing';
@@ -40,6 +41,7 @@ export default function UploadResumesPage() {
 
   const handleFiles = (files: FileList) => {
     const newFiles = Array.from(files).map(file => ({
+      id: `${file.name}-${file.size}-${file.lastModified}`,
       name: file.name,
       size: `${(file.size / 1024).toFixed(2)} KB`,
       status: 'processing' as const
@@ -56,14 +58,14 @@ export default function UploadResumesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-8">
         
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Upload Resumes</h1>
           <p className="mt-2 text-sm text-gray-600">
-            Upload candidate resumes for AI-powered analysis and scoring
+            Upload candidate resumes for the demo processing flow. Connect a backend to enable live parsing and scoring.
           </p>
         </div>
 
@@ -104,7 +106,7 @@ export default function UploadResumesPage() {
                 </label>
                 <span className="text-gray-600"> or drag and drop</span>
                 <p className="text-sm text-gray-500">
-                  PDF, DOC, DOCX up to 10MB
+                  PDF, DOC, DOCX up to 10MB. Demo processing only.
                 </p>
               </div>
             </div>
@@ -121,7 +123,7 @@ export default function UploadResumesPage() {
               </div>
               <div className="bg-purple-50 rounded-lg p-4 text-center">
                 <p className="text-sm font-medium text-purple-600">Batch Upload</p>
-                <p className="text-2xl font-bold text-purple-700 mt-1">Unlimited</p>
+                <p className="text-2xl font-bold text-purple-700 mt-1">Demo</p>
               </div>
             </div>
           </form>
@@ -143,9 +145,9 @@ export default function UploadResumesPage() {
             </div>
             
             <div className="space-y-3">
-              {uploadedFiles.map((file, index) => (
+              {uploadedFiles.map((file) => (
                 <div
-                  key={index}
+                  key={file.id}
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"
                 >
                   <div className="flex items-center gap-3 flex-1">
@@ -162,7 +164,7 @@ export default function UploadResumesPage() {
                     {file.status === 'success' && (
                       <>
                         <CheckCircle className="h-5 w-5 text-green-500" />
-                        <span className="text-sm font-medium text-green-600">Success</span>
+                        <span className="text-sm font-medium text-green-600">Demo processed</span>
                       </>
                     )}
                     {file.status === 'error' && (

@@ -4,43 +4,37 @@ import { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { Providers } from '@/app/providers';
+import MobileNav from './MobileNav';
+import { DemoBanner } from '@/components/shared/DemoBanner';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    
-    // Clean up any browser extension attributes
-    const cleanupExtensionAttributes = () => {
-      const html = document.documentElement;
-      const extensionAttrs = ['crxemulator', 'data-crx', 'data-extension'];
-      extensionAttrs.forEach(attr => {
-        if (html.hasAttribute(attr)) {
-          html.removeAttribute(attr);
-        }
-      });
-    };
-    
-    cleanupExtensionAttributes();
-    
-    // Set up a mutation observer to catch any future changes
-    const observer = new MutationObserver(cleanupExtensionAttributes);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['crxemulator', 'data-crx', 'data-extension'],
-    });
-    
-    return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!mobileNavOpen) {
+      return;
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [mobileNavOpen]);
 
   // Render a minimal loading state during hydration
   if (!mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-gray-600 text-sm font-medium">Loading Dashboard...</p>
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+          <p className="text-sm font-medium text-slate-600">Loading workspace...</p>
         </div>
       </div>
     );
@@ -48,17 +42,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <Providers>
-      <div className="min-h-screen bg-gray-50 flex">
-        {/* Sidebar - Fixed position, independent */}
+      <div className="flex min-h-screen bg-slate-50">
         <Sidebar />
+        <MobileNav open={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
         
-        {/* Main content area - Independent from sidebar */}
-        <div className="flex-1 flex flex-col md:ml-64">
-          {/* Header - Independent, spans full width of content area */}
-          <Header />
+        <div className="flex min-w-0 flex-1 flex-col md:ml-64">
+          <Header onMenuClick={() => setMobileNavOpen(true)} />
           
-          {/* Main content - Independent */}
-          <main className="flex-1 bg-gray-50">
+          <main className="min-w-0 flex-1 bg-slate-50">
+            <DemoBanner />
             {children}
           </main>
         </div>
