@@ -8,20 +8,33 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
-export interface NavItem {
+interface BaseNavItem {
   name: string;
   description: string;
   icon: LucideIcon;
-  href?: string;
-  phase?: string;
 }
 
-export const primaryNavItems: NavItem[] = [
+export interface PrimaryNavItem extends BaseNavItem {
+  href: string;
+}
+
+export interface FutureNavItem extends BaseNavItem {
+  href?: string;
+  phase: string;
+}
+
+export const primaryNavItems: PrimaryNavItem[] = [
   {
     name: 'Overview',
     description: 'Recruiter dashboard',
     href: '/',
     icon: Home,
+  },
+  {
+    name: 'Candidates',
+    description: 'Candidate list and analysis',
+    href: '/candidates',
+    icon: Users,
   },
   {
     name: 'Upload Resumes',
@@ -37,13 +50,7 @@ export const primaryNavItems: NavItem[] = [
   },
 ];
 
-export const futureNavItems: NavItem[] = [
-  {
-    name: 'Candidates',
-    description: 'Candidate list and analysis',
-    phase: 'Phase 2',
-    icon: Users,
-  },
+export const futureNavItems: FutureNavItem[] = [
   {
     name: 'Jobs',
     description: 'Job setup and selection',

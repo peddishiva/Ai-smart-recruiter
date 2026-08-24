@@ -1,18 +1,31 @@
-import {
+import type {
   ActiveJobContext,
   ActivityItem,
   Alert,
+  CandidateStatus,
   KpiData,
   PipelineStage,
   QuickAction,
-  RecommendedCandidate,
 } from '@/types';
+import { demoCandidates } from './candidates';
+
+const countByStatus = (status: CandidateStatus) =>
+  demoCandidates.filter((candidate) => candidate.status === status).length;
+
+const needsReviewCount = demoCandidates.filter((candidate) =>
+  ['new', 'reviewing'].includes(candidate.status)
+).length;
+const strongMatchCount = demoCandidates.filter((candidate) => candidate.matchScore >= 90).length;
+const averageMatchScore = Math.round(
+  demoCandidates.reduce((sum, candidate) => sum + candidate.matchScore, 0) /
+    demoCandidates.length
+);
 
 export const activeJobContext: ActiveJobContext = {
   title: 'Senior Frontend Engineer',
   department: 'Product Engineering',
   location: 'Remote / Bengaluru',
-  applicants: 86,
+  applicants: demoCandidates.length,
   openRoles: 2,
   updatedAt: 'Updated today',
 };
@@ -21,7 +34,7 @@ export const kpiData: KpiData[] = [
   {
     id: 'needs-review',
     title: 'Needs Review',
-    value: 18,
+    value: needsReviewCount,
     change: 9.5,
     icon: 'ClipboardList',
     color: 'bg-amber-100 text-amber-700',
@@ -29,7 +42,7 @@ export const kpiData: KpiData[] = [
   {
     id: 'strong-matches',
     title: 'Strong Matches',
-    value: 12,
+    value: strongMatchCount,
     change: 6.4,
     icon: 'UserCheck',
     color: 'bg-emerald-100 text-emerald-700',
@@ -37,7 +50,7 @@ export const kpiData: KpiData[] = [
   {
     id: 'avg-demo-score',
     title: 'Avg Demo Match',
-    value: '78%',
+    value: `${averageMatchScore}%`,
     change: 3.2,
     icon: 'Award',
     color: 'bg-blue-100 text-blue-700',
@@ -45,55 +58,10 @@ export const kpiData: KpiData[] = [
   {
     id: 'interviews',
     title: 'Interviews Scheduled',
-    value: 24,
+    value: countByStatus('interview'),
     change: -2.1,
     icon: 'Calendar',
     color: 'bg-slate-100 text-slate-700',
-  },
-];
-
-export const recommendedCandidates: RecommendedCandidate[] = [
-  {
-    id: 'maya-raman',
-    name: 'Maya Raman',
-    role: 'Senior Frontend Engineer',
-    matchScore: 94,
-    status: 'shortlisted',
-    topSkills: ['React', 'TypeScript', 'Design Systems'],
-    gaps: ['GraphQL leadership'],
-    summaryReason:
-      'Strongest demo match for product UI depth, component architecture, and accessibility work.',
-    evidence:
-      'Resume examples mention React platform ownership, dashboard redesigns, and WCAG-focused reviews.',
-    lastActivity: 'Resume reviewed 18m ago',
-  },
-  {
-    id: 'arjun-mehta',
-    name: 'Arjun Mehta',
-    role: 'Frontend Platform Engineer',
-    matchScore: 89,
-    status: 'reviewing',
-    topSkills: ['Next.js', 'Performance', 'Testing'],
-    gaps: ['Recruiting domain'],
-    summaryReason:
-      'High demo fit for Next.js delivery and front-end performance ownership.',
-    evidence:
-      'Resume highlights app router migrations, Web Vitals improvements, and test automation.',
-    lastActivity: 'Added to review queue 42m ago',
-  },
-  {
-    id: 'nisha-kapoor',
-    name: 'Nisha Kapoor',
-    role: 'Product Engineer',
-    matchScore: 86,
-    status: 'new',
-    topSkills: ['React', 'UX Systems', 'Analytics'],
-    gaps: ['Large-scale hiring tools'],
-    summaryReason:
-      'Promising demo match with strong product judgment and dashboard workflow experience.',
-    evidence:
-      'Resume references user-facing SaaS workflows, data-heavy screens, and cross-functional delivery.',
-    lastActivity: 'New resume uploaded today',
   },
 ];
 
@@ -101,35 +69,42 @@ export const pipelineStages: PipelineStage[] = [
   {
     id: 'new',
     label: 'New',
-    count: 28,
+    count: countByStatus('new'),
     description: 'Awaiting first review',
     tone: 'blue',
   },
   {
     id: 'reviewing',
     label: 'Reviewing',
-    count: 18,
+    count: countByStatus('reviewing'),
     description: 'Needs recruiter decision',
     tone: 'amber',
   },
   {
     id: 'shortlisted',
     label: 'Shortlisted',
-    count: 12,
+    count: countByStatus('shortlisted'),
     description: 'Ready for next step',
     tone: 'green',
   },
   {
     id: 'interview',
     label: 'Interview',
-    count: 8,
+    count: countByStatus('interview'),
     description: 'Scheduled or pending',
     tone: 'slate',
   },
   {
+    id: 'hired',
+    label: 'Hired',
+    count: countByStatus('hired'),
+    description: 'Accepted or closed',
+    tone: 'green',
+  },
+  {
     id: 'rejected',
     label: 'Rejected',
-    count: 20,
+    count: countByStatus('rejected'),
     description: 'Not moving forward',
     tone: 'red',
   },
@@ -139,7 +114,7 @@ export const smartAlertsData: Alert[] = [
   {
     id: 'candidate-match',
     title: 'Review strong demo match',
-    message: 'Maya Raman has a 94% demo match for Senior Frontend Engineer.',
+    message: 'Maya Raman has a 94% explained demo match for Senior Frontend Engineer.',
     time: '10m ago',
     priority: 'high',
     read: false,
@@ -147,7 +122,7 @@ export const smartAlertsData: Alert[] = [
   {
     id: 'review-queue',
     title: 'Review queue growing',
-    message: '18 candidates are waiting for recruiter review in the demo pipeline.',
+    message: `${needsReviewCount} candidates are waiting for recruiter review in the demo pipeline.`,
     time: '1h ago',
     priority: 'medium',
     read: false,
@@ -213,9 +188,10 @@ export const quickActionsData: QuickAction[] = [
   {
     id: 'review-candidates',
     title: 'Review candidates',
-    description: 'Candidate list and detail views.',
+    description: 'Open the candidate review workflow.',
     icon: 'Users',
-    availability: 'phase-2',
+    href: '/candidates',
+    availability: 'available',
   },
   {
     id: 'create-job',

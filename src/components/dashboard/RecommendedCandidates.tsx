@@ -1,5 +1,7 @@
-import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
+import Link from 'next/link';
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
 import { RecommendedCandidate } from '@/types';
+import MatchScore from '@/features/candidates/components/MatchScore';
 
 interface RecommendedCandidatesProps {
   candidates: RecommendedCandidate[];
@@ -37,7 +39,12 @@ export default function RecommendedCandidates({ candidates }: RecommendedCandida
               Demo match summaries that explain who appears strongest and why.
             </CardDescription>
           </div>
-          <Badge variant="demo">Example analysis</Badge>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="demo">Example analysis</Badge>
+            <Button href="/candidates" variant="secondary" size="sm">
+              View all
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -50,7 +57,12 @@ export default function RecommendedCandidates({ candidates }: RecommendedCandida
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-base font-semibold text-slate-950">{candidate.name}</h3>
+                    <Link
+                      href={`/candidates/${candidate.id}`}
+                      className="text-base font-semibold text-slate-950 hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      {candidate.name}
+                    </Link>
                     <Badge variant={statusVariants[candidate.status]}>
                       {statusLabels[candidate.status]}
                     </Badge>
@@ -58,10 +70,7 @@ export default function RecommendedCandidates({ candidates }: RecommendedCandida
                   <p className="mt-1 text-sm text-slate-600">{candidate.role}</p>
                   <p className="mt-1 text-xs text-slate-500">{candidate.lastActivity}</p>
                 </div>
-                <div className="flex items-center gap-2 sm:flex-col sm:items-end">
-                  <Badge variant="score">{candidate.matchScore}%</Badge>
-                  <span className="text-xs font-medium text-slate-500">Demo match</span>
-                </div>
+                <MatchScore score={candidate.matchScore} size="sm" showMeter={false} />
               </div>
 
               <p className="mt-4 text-sm leading-6 text-slate-700">{candidate.summaryReason}</p>
@@ -94,8 +103,13 @@ export default function RecommendedCandidates({ candidates }: RecommendedCandida
                 </div>
               </div>
 
-              <div className="mt-4 rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600">
-                Candidate detail review is coming in Phase 2.
+              <div className="mt-4 flex flex-col gap-2 rounded-lg bg-slate-50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-sm text-slate-600">
+                  Open the explained demo match analysis before making a decision.
+                </span>
+                <Button href={`/candidates/${candidate.id}`} variant="secondary" size="sm">
+                  Review
+                </Button>
               </div>
             </article>
           ))}

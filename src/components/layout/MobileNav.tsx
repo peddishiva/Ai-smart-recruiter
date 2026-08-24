@@ -53,7 +53,7 @@ export default function MobileNav({ open, onClose }: MobileNavProps) {
               return (
                 <Link
                   key={item.name}
-                  href={item.href ?? '#'}
+                  href={item.href}
                   onClick={onClose}
                   aria-current={isActive ? 'page' : undefined}
                   className={cn(

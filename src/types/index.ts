@@ -1,3 +1,8 @@
+import type { CandidateStatus } from './candidate';
+
+export * from './candidate';
+export * from './match';
+
 export interface KpiData {
   id: string;
   title: string;
@@ -22,14 +27,6 @@ export interface Alert {
   priority: 'high' | 'medium' | 'low';
   read: boolean;
 }
-
-export type CandidateStatus =
-  | 'new'
-  | 'reviewing'
-  | 'shortlisted'
-  | 'rejected'
-  | 'interview'
-  | 'hired';
 
 export interface ActiveJobContext {
   title: string;

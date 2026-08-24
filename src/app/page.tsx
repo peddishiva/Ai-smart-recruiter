@@ -57,8 +57,8 @@ export default function DashboardPage() {
               </div>
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 {activeJobContext.location} · {activeJobContext.openRoles} open roles ·{' '}
-                {activeJobContext.updatedAt}. Candidate and job detail workflows are coming in
-                later phases.
+                {activeJobContext.updatedAt}. Candidate reviews are available now; job setup
+                remains a later phase.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:flex">

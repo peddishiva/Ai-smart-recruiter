@@ -32,7 +32,7 @@ export default function Sidebar() {
                   return (
                     <Link
                       key={item.name}
-                      href={item.href ?? '#'}
+                      href={item.href}
                       aria-current={isActive ? 'page' : undefined}
                       className={cn(
                         'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors',

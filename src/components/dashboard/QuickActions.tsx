@@ -3,7 +3,7 @@
 import * as LucideIcons from 'lucide-react';
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
 import { quickActionsData } from '@/data/demo';
-import { QuickAction } from '@/types';
+import type { QuickAction } from '@/types';
 
 const phaseLabels: Record<QuickAction['availability'], string> = {
   available: 'Available',
@@ -26,7 +26,7 @@ export default function QuickActions() {
               (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[
                 action.icon
               ] ?? LucideIcons.Circle;
-            const isAvailable = action.availability === 'available';
+            const isAvailable = action.availability === 'available' && Boolean(action.href);
 
             return (
               <div
@@ -46,7 +46,7 @@ export default function QuickActions() {
                   <p className="mt-1 text-sm leading-5 text-slate-500">{action.description}</p>
                 </div>
                 <div className="mt-4">
-                  {isAvailable ? (
+                  {isAvailable && action.href ? (
                     <Button href={action.href} variant="secondary" size="sm" className="w-full">
                       Open
                     </Button>
