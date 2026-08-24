@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import {
-  AlertCircle,
   CheckCircle,
   FileText,
   Upload,
@@ -30,8 +29,37 @@ interface UploadedFile {
   id: string;
   name: string;
   size: string;
-  status: 'queued' | 'error' | 'processing';
+  status: 'queued' | 'error';
+  errorReason?: string;
 }
+
+const maxUploadBytes = 10 * 1024 * 1024;
+const allowedExtensions = ['pdf', 'doc', 'docx'];
+
+const formatFileSize = (bytes: number) => {
+  if (bytes >= 1024 * 1024) {
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  }
+
+  return `${(bytes / 1024).toFixed(2)} KB`;
+};
+
+const getFileExtension = (fileName: string) => {
+  const extension = fileName.split('.').pop();
+  return extension?.toLowerCase() ?? '';
+};
+
+const getUploadError = (file: File) => {
+  if (!allowedExtensions.includes(getFileExtension(file.name))) {
+    return 'Only PDF, DOC, or DOCX files can be queued.';
+  }
+
+  if (file.size > maxUploadBytes) {
+    return 'File exceeds the 10 MB demo limit.';
+  }
+
+  return undefined;
+};
 
 export default function UploadResumesWorkspace({
   job,
@@ -39,6 +67,7 @@ export default function UploadResumesWorkspace({
 }: UploadResumesWorkspaceProps) {
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const candidatesHref = legacy ? '/candidates' : `/jobs/${job.id}/candidates`;
 
   const handleDrag = (event: React.DragEvent) => {
     event.preventDefault();
@@ -70,22 +99,19 @@ export default function UploadResumesWorkspace({
   };
 
   const handleFiles = (files: FileList) => {
-    const newFiles = Array.from(files).map((file) => ({
-      id: `${file.name}-${file.size}-${file.lastModified}`,
-      name: file.name,
-      size: `${(file.size / 1024).toFixed(2)} KB`,
-      status: 'processing' as const,
-    }));
+    const newFiles = Array.from(files).map((file) => {
+      const errorReason = getUploadError(file);
+
+      return {
+        id: `${file.name}-${file.size}-${file.lastModified}`,
+        name: file.name,
+        size: formatFileSize(file.size),
+        status: errorReason ? ('error' as const) : ('queued' as const),
+        errorReason,
+      };
+    });
 
     setUploadedFiles((current) => [...current, ...newFiles]);
-
-    window.setTimeout(() => {
-      setUploadedFiles((current) =>
-        current.map((file) =>
-          file.status === 'processing' ? { ...file, status: 'queued' } : file
-        )
-      );
-    }, 900);
   };
 
   return (
@@ -96,7 +122,7 @@ export default function UploadResumesWorkspace({
           title="Upload Resumes"
           description={`Add demo resume files to the ${job.title} application queue. Phase 3 establishes job context only; real parsing and matching are not implemented.`}
           actions={
-            <Button href={`/jobs/${job.id}/candidates`} variant="secondary">
+            <Button href={candidatesHref} variant="secondary">
               View Candidates
             </Button>
           }
@@ -169,6 +195,7 @@ export default function UploadResumesWorkspace({
                   accept=".pdf,.doc,.docx"
                   onChange={handleChange}
                   className="sr-only"
+                  aria-label="Choose resume files for the local demo queue"
                 />
 
                 <Upload className="mx-auto mb-4 h-12 w-12 text-slate-400" aria-hidden="true" />
@@ -250,16 +277,9 @@ export default function UploadResumesWorkspace({
                       {file.status === 'error' && (
                         <>
                           <XCircle className="h-5 w-5 text-red-500" aria-hidden="true" />
-                          <span className="text-sm font-medium text-red-600">Failed</span>
-                        </>
-                      )}
-                      {file.status === 'processing' && (
-                        <>
-                          <AlertCircle
-                            className="h-5 w-5 animate-pulse text-amber-500"
-                            aria-hidden="true"
-                          />
-                          <span className="text-sm font-medium text-amber-700">Queueing</span>
+                          <span className="text-sm font-medium text-red-600">
+                            {file.errorReason ?? 'Not queued'}
+                          </span>
                         </>
                       )}
                     </div>

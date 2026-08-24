@@ -90,7 +90,7 @@ export default function MobileNav({ open, onClose }: MobileNavProps) {
         type="button"
         tabIndex={-1}
         className="absolute inset-0 h-full w-full bg-slate-950/40"
-        aria-label="Close navigation"
+        aria-hidden="true"
         onClick={onClose}
       />
       <div className="absolute inset-y-0 left-0 flex w-[min(20rem,calc(100vw-2rem))] flex-col bg-white shadow-xl">
@@ -112,7 +112,7 @@ export default function MobileNav({ open, onClose }: MobileNavProps) {
 
         <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Mobile navigation">
           <div className="px-3 pb-4">
-            <JobSwitcher onSwitched={onClose} />
+            <JobSwitcher ariaLabel="Switch active job from mobile navigation" onSwitched={onClose} />
           </div>
 
           <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-500">

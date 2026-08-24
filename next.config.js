@@ -9,10 +9,6 @@ const nextConfig = {
   },
   // Disable React DevTools in production
   productionBrowserSourceMaps: false,
-  // Ensure output is standalone for better Vercel deployment
-  output: 'standalone',
-  // Set the output file tracing root to suppress workspace warnings
-  outputFileTracingRoot: __dirname,
 };
 
 module.exports = nextConfig;

@@ -44,6 +44,19 @@ export default function DashboardWorkspace({ jobId, legacy = false }: DashboardW
     ? '/candidates'
     : `/jobs/${data.activeJobContext.id}/candidates`;
   const candidateBaseHref = candidatesHref;
+  const quickActions = legacy
+    ? data.quickActionsData.map((action) => {
+        if (action.id === 'upload-resumes') {
+          return { ...action, href: '/upload-resumes' };
+        }
+
+        if (action.id === 'review-candidates') {
+          return { ...action, href: '/candidates' };
+        }
+
+        return action;
+      })
+    : data.quickActionsData;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -103,7 +116,7 @@ export default function DashboardWorkspace({ jobId, legacy = false }: DashboardW
           </CardContent>
         </Card>
 
-        <QuickActions actions={data.quickActionsData} />
+        <QuickActions actions={quickActions} />
 
         <section aria-labelledby="kpi-summary">
           <div className="mb-3 flex items-center justify-between gap-3">

@@ -9,12 +9,14 @@ import { buildJobSwitchPath, getJobIdFromPathname } from '../utils/jobRouting';
 interface JobSwitcherProps {
   className?: string;
   label?: string;
+  ariaLabel?: string;
   onSwitched?: () => void;
 }
 
 export default function JobSwitcher({
   className,
   label = 'Active job',
+  ariaLabel = 'Switch active job context',
   onSwitched,
 }: JobSwitcherProps) {
   const pathname = usePathname();
@@ -39,7 +41,7 @@ export default function JobSwitcher({
             onSwitched?.();
           }}
           className="h-10 w-full min-w-0 rounded-lg border border-slate-200 bg-white pl-9 pr-9 text-sm font-semibold text-slate-950 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          aria-label="Switch active job context"
+          aria-label={ariaLabel}
         >
           {demoJobs.map((job) => (
             <option key={job.id} value={job.id}>

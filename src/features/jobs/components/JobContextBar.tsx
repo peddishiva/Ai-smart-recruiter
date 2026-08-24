@@ -33,7 +33,10 @@ export default function JobContextBar() {
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-          <JobSwitcher className="w-full sm:w-64" />
+          <JobSwitcher
+            className="w-full sm:w-64"
+            ariaLabel="Switch active job from context bar"
+          />
           <Link
             href={`/jobs/${activeJob.id}`}
             className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"

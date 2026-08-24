@@ -27,7 +27,7 @@ export default function Sidebar() {
 
         <div className="flex flex-1 flex-col overflow-y-auto px-4 pb-6 pt-4">
           <nav className="space-y-6" aria-label="Primary navigation">
-            <JobSwitcher />
+            <JobSwitcher ariaLabel="Switch active job from sidebar" />
 
             <div>
               <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
