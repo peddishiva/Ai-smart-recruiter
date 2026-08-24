@@ -4,11 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { User } from 'lucide-react';
 import { Badge } from '@/components/ui';
+import { DEFAULT_JOB_ID } from '@/data/demo';
 import { cn } from '@/lib/utils/cn';
-import { futureNavItems, primaryNavItems } from './navigation';
+import JobSwitcher from '@/features/jobs/components/JobSwitcher';
+import { getJobIdFromPathname, isPathActive } from '@/features/jobs/utils/jobRouting';
+import { futureNavItems, getJobWorkspaceNavItems, topLevelNavItems } from './navigation';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const activeJobId = getJobIdFromPathname(pathname) ?? DEFAULT_JOB_ID;
+  const jobWorkspaceNavItems = getJobWorkspaceNavItems(activeJobId);
 
   return (
     <aside className="hidden md:fixed md:inset-y-0 md:left-0 md:z-20 md:flex md:w-64 md:flex-col">
@@ -22,20 +27,23 @@ export default function Sidebar() {
 
         <div className="flex flex-1 flex-col overflow-y-auto px-4 pb-6 pt-4">
           <nav className="space-y-6" aria-label="Primary navigation">
+            <JobSwitcher />
+
             <div>
               <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Workspace
+                Main
               </p>
               <div className="mt-2 space-y-1">
-                {primaryNavItems.map((item) => {
-                  const isActive = pathname === item.href;
+                {topLevelNavItems.map((item) => {
+                  const isActive =
+                    item.href === '/jobs' ? isPathActive(pathname, item.href) : pathname === item.href;
                   return (
                     <Link
                       key={item.name}
                       href={item.href}
                       aria-current={isActive ? 'page' : undefined}
                       className={cn(
-                        'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors',
+                        'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
                         isActive
                           ? 'bg-blue-50 text-blue-700'
                           : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
@@ -57,7 +65,40 @@ export default function Sidebar() {
 
             <div>
               <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Coming Next
+                Job Workspace
+              </p>
+              <div className="mt-2 space-y-1">
+                {jobWorkspaceNavItems.map((item) => {
+                  const isActive = isPathActive(pathname, item.href);
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      aria-current={isActive ? 'page' : undefined}
+                      className={cn(
+                        'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
+                        isActive
+                          ? 'bg-blue-50 text-blue-700'
+                          : 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                      )}
+                    >
+                      <item.icon
+                        className={cn(
+                          'h-5 w-5 flex-shrink-0',
+                          isActive ? 'text-blue-600' : 'text-slate-400 group-hover:text-slate-600'
+                        )}
+                        aria-hidden="true"
+                      />
+                      <span className="flex-1">{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <p className="px-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Coming Later
               </p>
               <div className="mt-2 space-y-1">
                 {futureNavItems.map((item) => (

@@ -27,6 +27,9 @@ import MatchScore from './MatchScore';
 
 interface CandidateDetailWorkspaceProps {
   candidate: Candidate;
+  backHref?: string;
+  backLabel?: string;
+  jobTitle?: string;
 }
 
 const evidenceLabels: Record<EvidenceCategory, string> = {
@@ -48,7 +51,12 @@ const evidenceVariants: Record<
   risk: 'warning',
 };
 
-export default function CandidateDetailWorkspace({ candidate }: CandidateDetailWorkspaceProps) {
+export default function CandidateDetailWorkspace({
+  candidate,
+  backHref = '/candidates',
+  backLabel = 'Back to Candidates',
+  jobTitle,
+}: CandidateDetailWorkspaceProps) {
   const [status, setStatus] = useState<CandidateStatus>(candidate.status);
   const statusChanged = status !== candidate.status;
 
@@ -56,11 +64,11 @@ export default function CandidateDetailWorkspace({ candidate }: CandidateDetailW
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
         <Link
-          href="/candidates"
+          href={backHref}
           className="inline-flex items-center gap-2 rounded-lg text-sm font-semibold text-slate-600 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          Back to Candidates
+          {backLabel}
         </Link>
 
         <PageHeader
@@ -95,6 +103,7 @@ export default function CandidateDetailWorkspace({ candidate }: CandidateDetailW
               <div className="flex flex-wrap items-center gap-2">
                 <CandidateStatusBadge status={status} />
                 <Badge variant="demo">Demo analysis</Badge>
+                {jobTitle && <Badge variant="primary">{jobTitle}</Badge>}
                 {statusChanged && <Badge variant="warning">Local demo update</Badge>}
               </div>
               <h2 className="mt-3 text-xl font-bold text-slate-950">{candidate.role}</h2>
@@ -113,8 +122,8 @@ export default function CandidateDetailWorkspace({ candidate }: CandidateDetailW
                 </div>
               </div>
               <p className="mt-4 text-sm leading-6 text-slate-500">
-                Status actions are local demo interactions only. They do not call a backend and are
-                not persisted outside this page.
+                Status actions are local demo interactions only. This application record belongs to
+                one job context and does not call a backend or persist outside this page.
               </p>
             </div>
             <MatchScore score={candidate.matchScore} size="lg" className="lg:min-w-72" />

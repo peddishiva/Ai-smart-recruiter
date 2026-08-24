@@ -21,6 +21,7 @@ import {
 
 interface CandidateListClientProps {
   candidates: Candidate[];
+  candidateBaseHref?: string;
 }
 
 const defaultFilters: CandidateFilterState = {
@@ -30,7 +31,10 @@ const defaultFilters: CandidateFilterState = {
   sort: 'highest-match',
 };
 
-export default function CandidateListClient({ candidates }: CandidateListClientProps) {
+export default function CandidateListClient({
+  candidates,
+  candidateBaseHref = '/candidates',
+}: CandidateListClientProps) {
   const [filters, setFilters] = useState<CandidateFilterState>(defaultFilters);
 
   const filteredCandidates = useMemo(
@@ -213,7 +217,7 @@ export default function CandidateListClient({ candidates }: CandidateListClientP
                   <tr key={candidate.id} className="hover:bg-slate-50">
                     <td className="px-5 py-4">
                       <Link
-                        href={`/candidates/${candidate.id}`}
+                        href={`${candidateBaseHref}/${candidate.id}`}
                         className="font-semibold text-slate-950 hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                       >
                         {candidate.name}
@@ -244,7 +248,7 @@ export default function CandidateListClient({ candidates }: CandidateListClientP
                     </td>
                     <td className="px-5 py-4 text-sm text-slate-600">{candidate.addedAtLabel}</td>
                     <td className="px-5 py-4 text-right">
-                      <Button href={`/candidates/${candidate.id}`} variant="secondary" size="sm">
+                      <Button href={`${candidateBaseHref}/${candidate.id}`} variant="secondary" size="sm">
                         Review
                       </Button>
                     </td>
@@ -289,7 +293,7 @@ export default function CandidateListClient({ candidates }: CandidateListClientP
 
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-xs text-slate-500">Added {candidate.addedAtLabel}</p>
-                  <Button href={`/candidates/${candidate.id}`} variant="secondary" size="sm">
+                  <Button href={`${candidateBaseHref}/${candidate.id}`} variant="secondary" size="sm">
                     Review candidate
                   </Button>
                 </div>

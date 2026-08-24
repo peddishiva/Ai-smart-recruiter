@@ -5,6 +5,8 @@ import MatchScore from '@/features/candidates/components/MatchScore';
 
 interface RecommendedCandidatesProps {
   candidates: RecommendedCandidate[];
+  allCandidatesHref?: string;
+  candidateBaseHref?: string;
 }
 
 const statusLabels: Record<RecommendedCandidate['status'], string> = {
@@ -28,7 +30,38 @@ const statusVariants: Record<
   hired: 'success',
 };
 
-export default function RecommendedCandidates({ candidates }: RecommendedCandidatesProps) {
+export default function RecommendedCandidates({
+  candidates,
+  allCandidatesHref = '/candidates',
+  candidateBaseHref = '/candidates',
+}: RecommendedCandidatesProps) {
+  if (candidates.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <CardTitle>AI Recommended Candidates</CardTitle>
+              <CardDescription>
+                Demo match summaries that explain who appears strongest and why.
+              </CardDescription>
+            </div>
+            <Badge variant="demo">Example analysis</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
+            <p className="text-sm font-semibold text-slate-950">No recommendations yet</p>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              This job has no demo applications ready for recommendation. Upload context is
+              prepared, but real matching arrives in a later phase.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -41,7 +74,7 @@ export default function RecommendedCandidates({ candidates }: RecommendedCandida
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="demo">Example analysis</Badge>
-            <Button href="/candidates" variant="secondary" size="sm">
+            <Button href={allCandidatesHref} variant="secondary" size="sm">
               View all
             </Button>
           </div>
@@ -58,7 +91,7 @@ export default function RecommendedCandidates({ candidates }: RecommendedCandida
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
-                      href={`/candidates/${candidate.id}`}
+                      href={`${candidateBaseHref}/${candidate.id}`}
                       className="text-base font-semibold text-slate-950 hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                     >
                       {candidate.name}
@@ -107,7 +140,7 @@ export default function RecommendedCandidates({ candidates }: RecommendedCandida
                 <span className="text-sm text-slate-600">
                   Open the explained demo match analysis before making a decision.
                 </span>
-                <Button href={`/candidates/${candidate.id}`} variant="secondary" size="sm">
+                <Button href={`${candidateBaseHref}/${candidate.id}`} variant="secondary" size="sm">
                   Review
                 </Button>
               </div>

@@ -2,6 +2,8 @@
 
 import { Bell, Menu, Search } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import { getJobById } from '@/data/demo';
+import { getJobIdFromPathname } from '@/features/jobs/utils/jobRouting';
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -10,7 +12,15 @@ interface HeaderProps {
 const pageTitles: Record<string, { title: string; description: string }> = {
   '/': {
     title: 'Overview',
-    description: 'Candidate attention and demo recommendations',
+    description: 'Default job dashboard',
+  },
+  '/jobs': {
+    title: 'Jobs',
+    description: 'Create and manage openings',
+  },
+  '/jobs/create': {
+    title: 'Create Job',
+    description: 'Local demo job setup',
   },
   '/upload-resumes': {
     title: 'Upload Resumes',
@@ -26,15 +36,67 @@ const pageTitles: Record<string, { title: string; description: string }> = {
   },
 };
 
+const getHeaderPage = (pathname: string) => {
+  const jobId = getJobIdFromPathname(pathname);
+
+  if (jobId) {
+    const job = getJobById(jobId);
+    const jobTitle = job?.title ?? 'Job';
+
+    if (pathname.endsWith('/edit')) {
+      return {
+        title: 'Edit Job',
+        description: jobTitle,
+      };
+    }
+
+    if (pathname.includes(`/${jobId}/dashboard`)) {
+      return {
+        title: 'Overview',
+        description: `${jobTitle} workspace`,
+      };
+    }
+
+    if (pathname.includes(`/${jobId}/upload`)) {
+      return {
+        title: 'Upload Resumes',
+        description: `${jobTitle} application queue`,
+      };
+    }
+
+    if (pathname.includes(`/${jobId}/candidates/`)) {
+      return {
+        title: 'Candidate Detail',
+        description: `${jobTitle} application analysis`,
+      };
+    }
+
+    if (pathname.includes(`/${jobId}/candidates`)) {
+      return {
+        title: 'Candidates',
+        description: `${jobTitle} applications`,
+      };
+    }
+
+    return {
+      title: 'Job Profile',
+      description: jobTitle,
+    };
+  }
+
+  if (pathname.startsWith('/candidates/') && pathname !== '/candidates') {
+    return {
+      title: 'Candidate Detail',
+      description: 'Explainable demo match analysis',
+    };
+  }
+
+  return pageTitles[pathname] ?? pageTitles['/'];
+};
+
 export default function Header({ onMenuClick }: HeaderProps) {
   const pathname = usePathname();
-  const page =
-    pathname.startsWith('/candidates/') && pathname !== '/candidates'
-      ? {
-          title: 'Candidate Detail',
-          description: 'Explainable demo match analysis',
-        }
-      : pageTitles[pathname] ?? pageTitles['/'];
+  const page = getHeaderPage(pathname);
 
   return (
     <header className="sticky top-0 z-10 h-16 flex-shrink-0 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
@@ -75,8 +137,8 @@ export default function Header({ onMenuClick }: HeaderProps) {
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 disabled:cursor-not-allowed disabled:opacity-60"
-            aria-label="Notifications coming in Phase 3"
-            title="Notifications coming in Phase 3"
+            aria-label="Notifications coming in a later phase"
+            title="Notifications coming in a later phase"
             disabled
           >
             <Bell className="h-5 w-5" aria-hidden="true" />

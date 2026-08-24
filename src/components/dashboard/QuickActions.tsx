@@ -10,9 +10,14 @@ const phaseLabels: Record<QuickAction['availability'], string> = {
   'phase-2': 'Phase 2',
   'phase-3': 'Phase 3',
   'phase-4': 'Phase 4',
+  'phase-5': 'Phase 5',
 };
 
-export default function QuickActions() {
+interface QuickActionsProps {
+  actions?: QuickAction[];
+}
+
+export default function QuickActions({ actions = quickActionsData }: QuickActionsProps) {
   return (
     <Card>
       <CardHeader>
@@ -21,7 +26,7 @@ export default function QuickActions() {
       </CardHeader>
       <CardContent>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {quickActionsData.map((action) => {
+          {actions.map((action) => {
             const Icon =
               (LucideIcons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[
                 action.icon

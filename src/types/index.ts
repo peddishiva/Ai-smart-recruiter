@@ -1,6 +1,7 @@
 import type { CandidateStatus } from './candidate';
 
 export * from './candidate';
+export * from './job';
 export * from './match';
 
 export interface KpiData {
@@ -29,16 +30,19 @@ export interface Alert {
 }
 
 export interface ActiveJobContext {
+  id: string;
   title: string;
   department: string;
   location: string;
   applicants: number;
   openRoles: number;
   updatedAt: string;
+  status: string;
 }
 
 export interface RecommendedCandidate {
   id: string;
+  jobId: string;
   name: string;
   role: string;
   matchScore: number;
@@ -72,5 +76,5 @@ export interface QuickAction {
   description: string;
   icon: string;
   href?: string;
-  availability: 'available' | 'phase-2' | 'phase-3' | 'phase-4';
+  availability: 'available' | 'phase-2' | 'phase-3' | 'phase-4' | 'phase-5';
 }

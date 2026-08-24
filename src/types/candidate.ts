@@ -10,6 +10,7 @@ export type CandidateStatus =
 
 export interface Candidate {
   id: string;
+  jobId: string;
   name: string;
   role: string;
   location: string;

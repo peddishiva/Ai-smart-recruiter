@@ -1,6 +1,7 @@
 import type { Candidate, RecommendedCandidate } from '@/types';
+import { DEFAULT_JOB_ID } from './jobs';
 
-export const demoCandidates: Candidate[] = [
+const frontendCandidates: Array<Omit<Candidate, 'jobId'>> = [
   {
     id: 'maya-raman',
     name: 'Maya Raman',
@@ -19,7 +20,7 @@ export const demoCandidates: Candidate[] = [
       'Senior frontend engineer with platform ownership, accessibility reviews, and production dashboard experience.',
     matchAnalysis: {
       summary:
-        'Strong demo match for the active Senior Frontend Engineer role because her experience aligns with component architecture, accessibility, and data-heavy product UI delivery.',
+        'Strong demo match for the active Frontend Developer role because her experience aligns with component architecture, accessibility, and data-heavy product UI delivery.',
       requiredSkillsMatched: 8,
       requiredSkillsTotal: 9,
       scoreBreakdown: [
@@ -787,12 +788,488 @@ export const demoCandidates: Candidate[] = [
   },
 ];
 
-export const recommendedCandidates: RecommendedCandidate[] = demoCandidates
-  .filter((candidate) => candidate.status !== 'rejected')
+interface JobCandidateSeed {
+  id: string;
+  jobId: string;
+  name: string;
+  role: string;
+  location: string;
+  experienceYears: number;
+  experienceSummary: string;
+  education: string;
+  skills: string[];
+  status: Candidate['status'];
+  matchScore: number;
+  addedAt: string;
+  addedAtLabel: string;
+  lastActivity: string;
+  resumeSummary: string;
+  summary: string;
+  requiredSkillsMatched: number;
+  requiredSkillsTotal: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+  weakerAreas: string[];
+  strengths: string[];
+  gaps: string[];
+  recommendationTitle: string;
+  recommendationReason: string;
+  recommendationNextStep: string;
+  recommendationDecision: Candidate['matchAnalysis']['recommendation']['decision'];
+}
+
+const createJobCandidate = (seed: JobCandidateSeed): Candidate => ({
+  id: seed.id,
+  jobId: seed.jobId,
+  name: seed.name,
+  role: seed.role,
+  location: seed.location,
+  experienceYears: seed.experienceYears,
+  experienceSummary: seed.experienceSummary,
+  education: seed.education,
+  skills: seed.skills,
+  status: seed.status,
+  matchScore: seed.matchScore,
+  addedAt: seed.addedAt,
+  addedAtLabel: seed.addedAtLabel,
+  lastActivity: seed.lastActivity,
+  resumeSummary: seed.resumeSummary,
+  matchAnalysis: {
+    summary: seed.summary,
+    requiredSkillsMatched: seed.requiredSkillsMatched,
+    requiredSkillsTotal: seed.requiredSkillsTotal,
+    scoreBreakdown: [
+      {
+        id: 'skills',
+        label: 'Skills',
+        score: seed.requiredSkillsMatched,
+        maxScore: seed.requiredSkillsTotal,
+        description: 'Demo comparison against this job profile requirements.',
+      },
+      {
+        id: 'experience',
+        label: 'Experience',
+        score: Math.min(10, Math.max(4, seed.experienceYears + 2)),
+        maxScore: 10,
+        description: 'Experience depth estimated from the demo application summary.',
+      },
+      {
+        id: 'education',
+        label: 'Education',
+        score: 8,
+        maxScore: 10,
+        description: 'Relevant education or equivalent experience is present.',
+      },
+      {
+        id: 'domain',
+        label: 'Domain',
+        score: seed.matchScore >= 88 ? 9 : seed.matchScore >= 78 ? 8 : 6,
+        maxScore: 10,
+        description: 'Role-specific evidence for this job context.',
+      },
+    ],
+    matchedSkills: seed.matchedSkills,
+    missingSkills: seed.missingSkills,
+    weakerAreas: seed.weakerAreas,
+    strengths: seed.strengths,
+    gaps: seed.gaps,
+    evidence: [
+      {
+        id: `${seed.id}-e1`,
+        category: 'skills',
+        title: 'Job-specific skills',
+        detail: `${seed.name} shows demo evidence for ${seed.matchedSkills.slice(0, 3).join(', ')}.`,
+      },
+      {
+        id: `${seed.id}-e2`,
+        category: 'experience',
+        title: 'Experience signal',
+        detail: seed.experienceSummary,
+      },
+      {
+        id: `${seed.id}-e3`,
+        category: seed.missingSkills.length > 0 ? 'risk' : 'impact',
+        title: seed.missingSkills.length > 0 ? 'Areas to validate' : 'Role alignment',
+        detail:
+          seed.missingSkills.length > 0
+            ? `Validate ${seed.missingSkills.slice(0, 2).join(' and ')} before a recruiter decision.`
+            : 'The demo profile aligns closely with the active job criteria.',
+      },
+    ],
+    recommendation: {
+      decision: seed.recommendationDecision,
+      title: seed.recommendationTitle,
+      reason: seed.recommendationReason,
+      nextStep: seed.recommendationNextStep,
+    },
+  },
+});
+
+const additionalJobCandidates: Candidate[] = [
+  createJobCandidate({
+    id: 'ravi-menon-backend',
+    jobId: 'backend-developer',
+    name: 'Ravi Menon',
+    role: 'Senior Backend Engineer',
+    location: 'Hyderabad, India',
+    experienceYears: 7,
+    experienceSummary: '7 years building Node.js APIs, PostgreSQL services, and queue workers.',
+    education: 'B.Tech Computer Science, JNTU Hyderabad',
+    skills: ['Node.js', 'TypeScript', 'PostgreSQL', 'APIs', 'Docker', 'Queues', 'AWS'],
+    status: 'shortlisted',
+    matchScore: 93,
+    addedAt: '2026-08-23',
+    addedAtLabel: 'Aug 23, 2026',
+    lastActivity: 'Shortlisted for backend architecture review',
+    resumeSummary: 'Backend platform engineer with strong API and asynchronous processing evidence.',
+    summary:
+      'Strong demo match for Backend Developer because his service design, database, and queue-worker experience align with the job profile.',
+    requiredSkillsMatched: 5,
+    requiredSkillsTotal: 5,
+    matchedSkills: ['Node.js', 'PostgreSQL', 'APIs', 'Docker', 'AWS'],
+    missingSkills: [],
+    weakerAreas: ['Confirm observability depth in production incidents'],
+    strengths: [
+      'Strong API and database design signal.',
+      'Queue-worker experience supports future resume processing architecture.',
+      'Comfortable with TypeScript service delivery.',
+    ],
+    gaps: ['Validate incident response and service ownership examples.'],
+    recommendationDecision: 'technical-interview',
+    recommendationTitle: 'Recommended for backend architecture interview',
+    recommendationReason: 'The demo evidence maps closely to backend service responsibilities.',
+    recommendationNextStep: 'Ask about data modeling for job-scoped applications and background jobs.',
+  }),
+  createJobCandidate({
+    id: 'leah-kim-backend',
+    jobId: 'backend-developer',
+    name: 'Leah Kim',
+    role: 'API Platform Engineer',
+    location: 'Seoul, South Korea',
+    experienceYears: 6,
+    experienceSummary: '6 years creating secure API gateways, service contracts, and observability workflows.',
+    education: 'M.S. Software Systems, KAIST',
+    skills: ['APIs', 'Security Review', 'Node.js', 'Observability', 'PostgreSQL', 'AWS'],
+    status: 'interview',
+    matchScore: 89,
+    addedAt: '2026-08-22',
+    addedAtLabel: 'Aug 22, 2026',
+    lastActivity: 'Interview packet needs scorecard notes',
+    resumeSummary: 'API platform engineer with security and observability strength.',
+    summary:
+      'Good demo match for backend platform work, especially around service contracts and production observability.',
+    requiredSkillsMatched: 4,
+    requiredSkillsTotal: 5,
+    matchedSkills: ['APIs', 'Node.js', 'Observability', 'PostgreSQL'],
+    missingSkills: ['Docker ownership'],
+    weakerAreas: ['Container and deployment ownership should be checked'],
+    strengths: [
+      'Strong service contract discipline.',
+      'Security review experience is useful for backend architecture.',
+      'Good production monitoring evidence.',
+    ],
+    gaps: ['Probe hands-on Docker and worker deployment experience.'],
+    recommendationDecision: 'technical-interview',
+    recommendationTitle: 'Recommended for technical interview',
+    recommendationReason: 'Her API and observability background fits the backend job well.',
+    recommendationNextStep: 'Validate deployment ownership and job-scoped data modeling.',
+  }),
+  createJobCandidate({
+    id: 'noah-williams-backend',
+    jobId: 'backend-developer',
+    name: 'Noah Williams',
+    role: 'Full Stack Developer',
+    location: 'Austin, USA',
+    experienceYears: 4,
+    experienceSummary: '4 years across React features, Node.js APIs, and PostgreSQL-backed internal tools.',
+    education: 'B.S. Computer Science, UT Austin',
+    skills: ['Node.js', 'React', 'PostgreSQL', 'REST APIs', 'Testing'],
+    status: 'reviewing',
+    matchScore: 78,
+    addedAt: '2026-08-21',
+    addedAtLabel: 'Aug 21, 2026',
+    lastActivity: 'Needs recruiter review',
+    resumeSummary: 'Full-stack profile with useful backend skills but less platform depth.',
+    summary:
+      'Potential demo match with practical Node.js and PostgreSQL experience, though platform ownership is less clear.',
+    requiredSkillsMatched: 3,
+    requiredSkillsTotal: 5,
+    matchedSkills: ['Node.js', 'PostgreSQL', 'APIs'],
+    missingSkills: ['Docker', 'Observability'],
+    weakerAreas: ['Less evidence of production service ownership'],
+    strengths: [
+      'Hands-on API and database experience.',
+      'Can collaborate across frontend and backend.',
+      'Testing mindset appears in the demo profile.',
+    ],
+    gaps: ['Confirm backend depth before advancing.'],
+    recommendationDecision: 'recruiter-screen',
+    recommendationTitle: 'Recommended for focused recruiter screen',
+    recommendationReason: 'The profile may fit if the role allows full-stack backend growth.',
+    recommendationNextStep: 'Screen for ownership of backend services, Docker, and monitoring.',
+  }),
+  createJobCandidate({
+    id: 'mina-cho-backend',
+    jobId: 'backend-developer',
+    name: 'Mina Cho',
+    role: 'Cloud Services Engineer',
+    location: 'Singapore',
+    experienceYears: 5,
+    experienceSummary: '5 years maintaining cloud services, AWS infrastructure, and operational tooling.',
+    education: 'B.Comp. Information Systems, National University of Singapore',
+    skills: ['AWS', 'Docker', 'Monitoring', 'Python', 'APIs'],
+    status: 'new',
+    matchScore: 74,
+    addedAt: '2026-08-20',
+    addedAtLabel: 'Aug 20, 2026',
+    lastActivity: 'New backend application added',
+    resumeSummary: 'Cloud services engineer with operations strength and moderate API evidence.',
+    summary:
+      'Potential demo match for backend-adjacent cloud operations, but Node.js and PostgreSQL evidence is weaker.',
+    requiredSkillsMatched: 3,
+    requiredSkillsTotal: 5,
+    matchedSkills: ['AWS', 'Docker', 'APIs'],
+    missingSkills: ['Node.js', 'PostgreSQL'],
+    weakerAreas: ['Backend language and database depth are uncertain'],
+    strengths: [
+      'Good cloud operations signal.',
+      'Docker and monitoring experience align with platform needs.',
+      'API exposure may transfer to service work.',
+    ],
+    gaps: ['Assess whether she wants backend product service ownership.'],
+    recommendationDecision: 'hold',
+    recommendationTitle: 'Hold for backend review',
+    recommendationReason: 'Useful cloud experience, but core backend fit needs validation.',
+    recommendationNextStep: 'Review Node.js and PostgreSQL evidence before advancing.',
+  }),
+  createJobCandidate({
+    id: 'anika-das-data',
+    jobId: 'data-analyst',
+    name: 'Anika Das',
+    role: 'People Data Analyst',
+    location: 'Mumbai, India',
+    experienceYears: 5,
+    experienceSummary: '5 years analyzing recruiting funnels, interview conversion, and hiring metrics.',
+    education: 'M.Sc. Statistics, University of Mumbai',
+    skills: ['SQL', 'Recruiting Analytics', 'Excel', 'Tableau', 'Data Visualization'],
+    status: 'shortlisted',
+    matchScore: 91,
+    addedAt: '2026-08-23',
+    addedAtLabel: 'Aug 23, 2026',
+    lastActivity: 'Shortlisted for analytics case review',
+    resumeSummary: 'People analytics specialist with strong recruiting funnel experience.',
+    summary:
+      'Strong demo match for Data Analyst because her recruiting analytics and SQL experience align with the job profile.',
+    requiredSkillsMatched: 4,
+    requiredSkillsTotal: 4,
+    matchedSkills: ['SQL', 'Recruiting Analytics', 'Excel', 'Data Visualization'],
+    missingSkills: [],
+    weakerAreas: ['Confirm dashboard storytelling for executive audiences'],
+    strengths: [
+      'Direct recruiting analytics experience.',
+      'Strong SQL and visualization foundation.',
+      'Comfortable with funnel and conversion metrics.',
+    ],
+    gaps: ['Validate how she defines clean hiring pipeline metrics.'],
+    recommendationDecision: 'technical-interview',
+    recommendationTitle: 'Recommended for analytics case interview',
+    recommendationReason: 'The demo evidence strongly fits the people analytics role.',
+    recommendationNextStep: 'Use a hiring funnel case exercise with messy data definitions.',
+  }),
+  createJobCandidate({
+    id: 'omar-hassan-data',
+    jobId: 'data-analyst',
+    name: 'Omar Hassan',
+    role: 'Business Intelligence Analyst',
+    location: 'Cairo, Egypt',
+    experienceYears: 4,
+    experienceSummary: '4 years building SQL reports, Excel models, and stakeholder dashboards.',
+    education: 'B.B.A. Information Systems, Cairo University',
+    skills: ['SQL', 'Excel', 'Power BI', 'Stakeholder communication', 'Data Visualization'],
+    status: 'reviewing',
+    matchScore: 83,
+    addedAt: '2026-08-22',
+    addedAtLabel: 'Aug 22, 2026',
+    lastActivity: 'Needs recruiter review for domain fit',
+    resumeSummary: 'BI analyst with strong reporting skills and adjacent recruiting-domain fit.',
+    summary:
+      'Good demo match for reporting and SQL work, with recruiting-domain experience still to validate.',
+    requiredSkillsMatched: 3,
+    requiredSkillsTotal: 4,
+    matchedSkills: ['SQL', 'Excel', 'Data Visualization'],
+    missingSkills: ['Recruiting Analytics'],
+    weakerAreas: ['Recruiting-specific metric knowledge is unclear'],
+    strengths: [
+      'Strong SQL reporting foundation.',
+      'Clear stakeholder dashboard experience.',
+      'Comfortable producing structured leadership views.',
+    ],
+    gaps: ['Probe whether he can translate analytics into recruiting decisions.'],
+    recommendationDecision: 'recruiter-screen',
+    recommendationTitle: 'Recommended for recruiter screen',
+    recommendationReason: 'The reporting skills fit, but domain ramp-up should be checked.',
+    recommendationNextStep: 'Screen for hiring funnel knowledge and metric definitions.',
+  }),
+  createJobCandidate({
+    id: 'claire-morgan-data',
+    jobId: 'data-analyst',
+    name: 'Claire Morgan',
+    role: 'Operations Analyst',
+    location: 'Dublin, Ireland',
+    experienceYears: 3,
+    experienceSummary: '3 years analyzing support operations, SLA trends, and process quality.',
+    education: 'B.Sc. Business Analytics, Trinity College Dublin',
+    skills: ['Excel', 'SQL', 'Operations Analytics', 'Process Improvement'],
+    status: 'new',
+    matchScore: 76,
+    addedAt: '2026-08-21',
+    addedAtLabel: 'Aug 21, 2026',
+    lastActivity: 'New data analyst application added',
+    resumeSummary: 'Operations analyst with transferable analytics skills and less recruiting context.',
+    summary:
+      'Potential demo match because analytics fundamentals are present, though recruiting analytics and visualization depth need validation.',
+    requiredSkillsMatched: 2,
+    requiredSkillsTotal: 4,
+    matchedSkills: ['Excel', 'SQL'],
+    missingSkills: ['Recruiting Analytics', 'Data Visualization'],
+    weakerAreas: ['Domain and visualization depth are less visible'],
+    strengths: [
+      'Good operational process mindset.',
+      'SQL and Excel fundamentals are present.',
+      'May transfer well into recruiting operations analytics.',
+    ],
+    gaps: ['Assess dashboard and recruiting funnel experience.'],
+    recommendationDecision: 'hold',
+    recommendationTitle: 'Hold for domain fit review',
+    recommendationReason: 'Transferable skills are present, but the role fit is less direct.',
+    recommendationNextStep: 'Review work samples before scheduling an interview.',
+  }),
+  createJobCandidate({
+    id: 'ethan-price-devops',
+    jobId: 'devops-engineer',
+    name: 'Ethan Price',
+    role: 'DevOps Engineer',
+    location: 'Pune, India',
+    experienceYears: 6,
+    experienceSummary: '6 years operating AWS workloads, CI/CD pipelines, Docker, and Terraform.',
+    education: 'B.Tech Information Technology, Pune University',
+    skills: ['AWS', 'Docker', 'Terraform', 'CI/CD', 'Monitoring', 'Security'],
+    status: 'shortlisted',
+    matchScore: 92,
+    addedAt: '2026-08-23',
+    addedAtLabel: 'Aug 23, 2026',
+    lastActivity: 'Shortlisted for infrastructure review',
+    resumeSummary: 'Infrastructure engineer with strong cloud and deployment reliability evidence.',
+    summary:
+      'Strong demo match for DevOps Engineer because AWS, Docker, Terraform, and CI/CD evidence align with the job profile.',
+    requiredSkillsMatched: 5,
+    requiredSkillsTotal: 5,
+    matchedSkills: ['AWS', 'Docker', 'CI/CD', 'Monitoring', 'Terraform'],
+    missingSkills: [],
+    weakerAreas: ['Confirm cost optimization and environment governance depth'],
+    strengths: [
+      'Strong cloud operations ownership.',
+      'Good infrastructure-as-code and CI/CD signal.',
+      'Monitoring and security experience reduce operational risk.',
+    ],
+    gaps: ['Validate incident response examples and production ownership.'],
+    recommendationDecision: 'technical-interview',
+    recommendationTitle: 'Recommended for infrastructure interview',
+    recommendationReason: 'The demo profile is a strong fit for current DevOps requirements.',
+    recommendationNextStep: 'Use a systems design conversation around secure deployment pipelines.',
+  }),
+  createJobCandidate({
+    id: 'fatima-rahman-devops',
+    jobId: 'devops-engineer',
+    name: 'Fatima Rahman',
+    role: 'Site Reliability Engineer',
+    location: 'Dhaka, Bangladesh',
+    experienceYears: 5,
+    experienceSummary: '5 years improving monitoring, incident response, Kubernetes, and release reliability.',
+    education: 'B.Sc. Computer Science, BRAC University',
+    skills: ['Monitoring', 'Kubernetes', 'CI/CD', 'Incident Response', 'AWS'],
+    status: 'reviewing',
+    matchScore: 84,
+    addedAt: '2026-08-22',
+    addedAtLabel: 'Aug 22, 2026',
+    lastActivity: 'Needs recruiter review for Terraform depth',
+    resumeSummary: 'SRE profile with strong reliability practices and moderate infrastructure-as-code evidence.',
+    summary:
+      'Good demo match for reliability and monitoring, with Terraform and Docker depth still to validate.',
+    requiredSkillsMatched: 3,
+    requiredSkillsTotal: 5,
+    matchedSkills: ['AWS', 'CI/CD', 'Monitoring'],
+    missingSkills: ['Terraform', 'Docker'],
+    weakerAreas: ['Infrastructure-as-code depth is unclear'],
+    strengths: [
+      'Strong reliability and incident response signal.',
+      'Kubernetes experience may help future scaling.',
+      'Good operational communication background.',
+    ],
+    gaps: ['Probe Terraform, Docker, and environment management ownership.'],
+    recommendationDecision: 'recruiter-screen',
+    recommendationTitle: 'Recommended for focused screen',
+    recommendationReason: 'Reliability skills fit, but core tooling depth needs checking.',
+    recommendationNextStep: 'Screen for Terraform and Docker ownership in production.',
+  }),
+  createJobCandidate({
+    id: 'mikhail-petrov-devops',
+    jobId: 'devops-engineer',
+    name: 'Mikhail Petrov',
+    role: 'Cloud Support Engineer',
+    location: 'Warsaw, Poland',
+    experienceYears: 4,
+    experienceSummary: '4 years supporting AWS services, scripted deployments, and monitoring tickets.',
+    education: 'B.Eng. Computer Engineering, Warsaw University of Technology',
+    skills: ['AWS', 'Monitoring', 'Bash', 'Support Operations', 'Docker'],
+    status: 'new',
+    matchScore: 72,
+    addedAt: '2026-08-21',
+    addedAtLabel: 'Aug 21, 2026',
+    lastActivity: 'New infrastructure application added',
+    resumeSummary: 'Cloud support background with some DevOps skills but less ownership evidence.',
+    summary:
+      'Potential demo match because cloud support skills are present, but CI/CD and Terraform ownership are weaker.',
+    requiredSkillsMatched: 3,
+    requiredSkillsTotal: 5,
+    matchedSkills: ['AWS', 'Docker', 'Monitoring'],
+    missingSkills: ['CI/CD', 'Terraform'],
+    weakerAreas: ['May be more support-oriented than ownership-oriented'],
+    strengths: [
+      'Practical AWS support experience.',
+      'Monitoring and troubleshooting background.',
+      'Some Docker exposure is present.',
+    ],
+    gaps: ['Assess readiness for owning deployment systems end to end.'],
+    recommendationDecision: 'hold',
+    recommendationTitle: 'Hold for infrastructure depth review',
+    recommendationReason: 'The profile has useful operations skills but may be light for the role.',
+    recommendationNextStep: 'Review CI/CD and Terraform examples before advancing.',
+  }),
+];
+
+export const demoCandidates: Candidate[] = [
+  ...frontendCandidates.map((candidate) => ({
+    ...candidate,
+    jobId: DEFAULT_JOB_ID,
+  })),
+  ...additionalJobCandidates,
+];
+
+export const getCandidatesForJob = (jobId: string) =>
+  demoCandidates.filter((candidate) => candidate.jobId === jobId);
+
+export const getCandidateForJob = (jobId: string, candidateId: string) =>
+  demoCandidates.find((candidate) => candidate.jobId === jobId && candidate.id === candidateId);
+
+export const getRecommendedCandidatesForJob = (jobId: string): RecommendedCandidate[] =>
+  getCandidatesForJob(jobId)
+    .filter((candidate) => candidate.status !== 'rejected')
   .sort((a, b) => b.matchScore - a.matchScore)
   .slice(0, 3)
   .map((candidate) => ({
     id: candidate.id,
+    jobId: candidate.jobId,
     name: candidate.name,
     role: candidate.role,
     matchScore: candidate.matchScore,
@@ -803,3 +1280,6 @@ export const recommendedCandidates: RecommendedCandidate[] = demoCandidates
     evidence: candidate.matchAnalysis.evidence[0]?.detail ?? candidate.resumeSummary,
     lastActivity: candidate.lastActivity,
   }));
+
+export const recommendedCandidates: RecommendedCandidate[] =
+  getRecommendedCandidatesForJob(DEFAULT_JOB_ID);

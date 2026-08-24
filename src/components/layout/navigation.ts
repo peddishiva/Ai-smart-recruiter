@@ -4,6 +4,7 @@ import {
   CalendarDays,
   FileText,
   Home,
+  Upload,
   Users,
   type LucideIcon,
 } from 'lucide-react';
@@ -23,44 +24,59 @@ export interface FutureNavItem extends BaseNavItem {
   phase: string;
 }
 
-export const primaryNavItems: PrimaryNavItem[] = [
+export const topLevelNavItems: PrimaryNavItem[] = [
   {
-    name: 'Overview',
-    description: 'Recruiter dashboard',
-    href: '/',
-    icon: Home,
+    name: 'Jobs',
+    description: 'Create and manage openings',
+    href: '/jobs',
+    icon: Briefcase,
   },
   {
-    name: 'Candidates',
-    description: 'Candidate list and analysis',
-    href: '/candidates',
-    icon: Users,
-  },
-  {
-    name: 'Upload Resumes',
-    description: 'Demo upload queue',
-    href: '/upload-resumes',
-    icon: FileText,
-  },
-  {
-    name: 'Reports',
-    description: 'Demo analytics',
+    name: 'Demo Reports',
+    description: 'Existing reports demo',
     href: '/reports',
     icon: BarChart2,
   },
 ];
 
-export const futureNavItems: FutureNavItem[] = [
+export const getJobWorkspaceNavItems = (jobId: string): PrimaryNavItem[] => [
   {
-    name: 'Jobs',
-    description: 'Job setup and selection',
-    phase: 'Phase 3',
-    icon: Briefcase,
+    name: 'Overview',
+    description: 'Job-scoped dashboard',
+    href: `/jobs/${jobId}/dashboard`,
+    icon: Home,
   },
   {
+    name: 'Candidates',
+    description: 'Applications for this job',
+    href: `/jobs/${jobId}/candidates`,
+    icon: Users,
+  },
+  {
+    name: 'Upload Resumes',
+    description: 'Queue resumes for this job',
+    href: `/jobs/${jobId}/upload`,
+    icon: Upload,
+  },
+];
+
+export const futureNavItems: FutureNavItem[] = [
+  {
     name: 'Interviews',
-    description: 'Interview workflow',
-    phase: 'Phase 4',
+    description: 'Manual interview selection and scheduling',
+    phase: 'Phase 5',
     icon: CalendarDays,
+  },
+  {
+    name: 'Analytics',
+    description: 'Job-scoped recruiting trends',
+    phase: 'Phase 5',
+    icon: BarChart2,
+  },
+  {
+    name: 'Job Reports',
+    description: 'Structured job-scoped exports',
+    phase: 'Phase 5',
+    icon: FileText,
   },
 ];

@@ -6,6 +6,7 @@ import Header from './Header';
 import { Providers } from '@/app/providers';
 import MobileNav from './MobileNav';
 import { DemoBanner } from '@/components/shared/DemoBanner';
+import JobContextBar from '@/features/jobs/components/JobContextBar';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -51,6 +52,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           
           <main className="min-w-0 flex-1 bg-slate-50">
             <DemoBanner />
+            <JobContextBar />
             {children}
           </main>
         </div>

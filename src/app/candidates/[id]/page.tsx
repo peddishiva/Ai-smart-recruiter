@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { demoCandidates } from '@/data/demo';
+import { notFound, redirect } from 'next/navigation';
+import { DEFAULT_JOB_ID, demoCandidates, getCandidateForJob, getCandidatesForJob, getJobById } from '@/data/demo';
 import CandidateDetailWorkspace from '@/features/candidates/components/CandidateDetailWorkspace';
 
 interface CandidateDetailPageProps {
@@ -10,7 +10,7 @@ interface CandidateDetailPageProps {
 }
 
 export function generateStaticParams() {
-  return demoCandidates.map((candidate) => ({
+  return getCandidatesForJob(DEFAULT_JOB_ID).map((candidate) => ({
     id: candidate.id,
   }));
 }
@@ -19,7 +19,7 @@ export async function generateMetadata({
   params,
 }: CandidateDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const candidate = demoCandidates.find((item) => item.id === id);
+  const candidate = getCandidateForJob(DEFAULT_JOB_ID, id);
 
   if (!candidate) {
     return {
@@ -35,11 +35,19 @@ export async function generateMetadata({
 
 export default async function CandidateDetailPage({ params }: CandidateDetailPageProps) {
   const { id } = await params;
-  const candidate = demoCandidates.find((item) => item.id === id);
+  const candidate = getCandidateForJob(DEFAULT_JOB_ID, id);
 
   if (!candidate) {
+    const jobScopedCandidate = demoCandidates.find((item) => item.id === id);
+
+    if (jobScopedCandidate) {
+      redirect(`/jobs/${jobScopedCandidate.jobId}/candidates/${jobScopedCandidate.id}`);
+    }
+
     notFound();
   }
 
-  return <CandidateDetailWorkspace candidate={candidate} />;
+  const job = getJobById(candidate.jobId);
+
+  return <CandidateDetailWorkspace candidate={candidate} jobTitle={job?.title} />;
 }
