@@ -11,6 +11,7 @@ export type CandidateStatus =
 export interface Candidate {
   id: string;
   jobId: string;
+  applicationId?: string;
   name: string;
   role: string;
   location: string;
@@ -25,4 +26,6 @@ export interface Candidate {
   lastActivity: string;
   resumeSummary: string;
   matchAnalysis: MatchAnalysis;
+  source?: 'demo-seed' | 'session-upload';
+  sourceFileName?: string;
 }

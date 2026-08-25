@@ -216,13 +216,13 @@ export default function CandidateListClient({
                 {filteredCandidates.map((candidate) => (
                   <tr key={candidate.id} className="hover:bg-slate-50">
                     <td className="px-5 py-4">
-                      <Link
-                        href={`${candidateBaseHref}/${candidate.id}`}
-                        className="font-semibold text-slate-950 hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                      >
-                        {candidate.name}
-                      </Link>
+                      <CandidateName candidate={candidate} candidateBaseHref={candidateBaseHref} />
                       <p className="mt-1 text-sm text-slate-500">{candidate.location}</p>
+                      {candidate.applicationId && (
+                        <p className="mt-1 text-xs text-slate-500">
+                          Application ID: {candidate.applicationId}
+                        </p>
+                      )}
                     </td>
                     <td className="px-5 py-4 text-sm text-slate-700">{candidate.role}</td>
                     <td className="px-5 py-4 text-sm text-slate-700">
@@ -248,9 +248,15 @@ export default function CandidateListClient({
                     </td>
                     <td className="px-5 py-4 text-sm text-slate-600">{candidate.addedAtLabel}</td>
                     <td className="px-5 py-4 text-right">
-                      <Button href={`${candidateBaseHref}/${candidate.id}`} variant="secondary" size="sm">
-                        Review
-                      </Button>
+                      {candidate.source === 'session-upload' ? (
+                        <Button variant="muted" size="sm" disabled>
+                          Detail after persistence
+                        </Button>
+                      ) : (
+                        <Button href={`${candidateBaseHref}/${candidate.id}`} variant="secondary" size="sm">
+                          Review
+                        </Button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -270,11 +276,19 @@ export default function CandidateListClient({
                     <div className="flex flex-wrap items-center gap-2">
                       <h2 className="text-base font-semibold text-slate-950">{candidate.name}</h2>
                       <CandidateStatusBadge status={candidate.status} />
+                      {candidate.source === 'session-upload' && (
+                        <Badge variant="demo">Session upload</Badge>
+                      )}
                     </div>
                     <p className="mt-1 text-sm text-slate-700">{candidate.role}</p>
                     <p className="mt-1 text-sm text-slate-500">
                       {candidate.location} · {candidate.experienceYears} years
                     </p>
+                    {candidate.applicationId && (
+                      <p className="mt-1 text-xs text-slate-500">
+                        Application ID: {candidate.applicationId}
+                      </p>
+                    )}
                   </div>
                   <MatchScore score={candidate.matchScore} size="sm" showMeter={false} />
                 </div>
@@ -293,9 +307,15 @@ export default function CandidateListClient({
 
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-xs text-slate-500">Added {candidate.addedAtLabel}</p>
-                  <Button href={`${candidateBaseHref}/${candidate.id}`} variant="secondary" size="sm">
-                    Review candidate
-                  </Button>
+                  {candidate.source === 'session-upload' ? (
+                    <Button variant="muted" size="sm" disabled>
+                      Detail after persistence
+                    </Button>
+                  ) : (
+                    <Button href={`${candidateBaseHref}/${candidate.id}`} variant="secondary" size="sm">
+                      Review candidate
+                    </Button>
+                  )}
                 </div>
               </article>
             ))}
@@ -303,5 +323,31 @@ export default function CandidateListClient({
         </>
       )}
     </div>
+  );
+}
+
+function CandidateName({
+  candidate,
+  candidateBaseHref,
+}: {
+  candidate: Candidate;
+  candidateBaseHref: string;
+}) {
+  if (candidate.source === 'session-upload') {
+    return (
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-semibold text-slate-950">{candidate.name}</span>
+        <Badge variant="demo">Session upload</Badge>
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={`${candidateBaseHref}/${candidate.id}`}
+      className="font-semibold text-slate-950 hover:text-blue-700 focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+    >
+      {candidate.name}
+    </Link>
   );
 }

@@ -3,6 +3,7 @@ import type { CandidateStatus } from './candidate';
 export * from './candidate';
 export * from './job';
 export * from './match';
+export * from './upload';
 
 export interface KpiData {
   id: string;

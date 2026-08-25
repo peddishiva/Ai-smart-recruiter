@@ -7,6 +7,7 @@ import { Providers } from '@/app/providers';
 import MobileNav from './MobileNav';
 import { DemoBanner } from '@/components/shared/DemoBanner';
 import JobContextBar from '@/features/jobs/components/JobContextBar';
+import { DemoApplicationProvider } from '@/features/uploads/components/DemoApplicationProvider';
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
@@ -43,20 +44,22 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
   return (
     <Providers>
-      <div className="flex min-h-screen bg-slate-50">
-        <Sidebar />
-        <MobileNav open={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
-        
-        <div className="flex min-w-0 flex-1 flex-col md:ml-64">
-          <Header onMenuClick={() => setMobileNavOpen(true)} />
-          
-          <main className="min-w-0 flex-1 bg-slate-50">
-            <DemoBanner />
-            <JobContextBar />
-            {children}
-          </main>
+      <DemoApplicationProvider>
+        <div className="flex min-h-screen bg-slate-50">
+          <Sidebar />
+          <MobileNav open={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
+
+          <div className="flex min-w-0 flex-1 flex-col md:ml-64">
+            <Header onMenuClick={() => setMobileNavOpen(true)} />
+
+            <main className="min-w-0 flex-1 bg-slate-50">
+              <DemoBanner />
+              <JobContextBar />
+              {children}
+            </main>
+          </div>
         </div>
-      </div>
+      </DemoApplicationProvider>
     </Providers>
   );
 }

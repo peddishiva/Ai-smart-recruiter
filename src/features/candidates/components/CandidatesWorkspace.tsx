@@ -1,8 +1,12 @@
+'use client';
+
+import { useMemo } from 'react';
 import { Upload } from 'lucide-react';
 import { Badge, Button, Card, CardContent, PageHeader } from '@/components/ui';
 import type { Candidate, Job } from '@/types';
 import CandidateListClient from './CandidateListClient';
 import JobWorkspaceNav from '@/features/jobs/components/JobWorkspaceNav';
+import { useDemoApplicationsForJob } from '@/features/uploads/components/DemoApplicationProvider';
 
 interface CandidatesWorkspaceProps {
   candidates: Candidate[];
@@ -19,16 +23,22 @@ export default function CandidatesWorkspace({
   uploadHref = '/upload-resumes',
   legacy = false,
 }: CandidatesWorkspaceProps) {
-  const totalCandidates = candidates.length;
-  const needsReview = candidates.filter((candidate) =>
+  const sessionApplications = useDemoApplicationsForJob(job.id);
+  const visibleCandidates = useMemo(
+    () => [...sessionApplications.map((application) => application.candidate), ...candidates],
+    [candidates, sessionApplications]
+  );
+  const totalCandidates = visibleCandidates.length;
+  const needsReview = visibleCandidates.filter((candidate) =>
     ['new', 'reviewing'].includes(candidate.status)
   ).length;
-  const strongMatches = candidates.filter((candidate) => candidate.matchScore >= 90).length;
+  const strongMatches = visibleCandidates.filter((candidate) => candidate.matchScore >= 90).length;
   const averageScore =
     totalCandidates === 0
       ? 0
       : Math.round(
-          candidates.reduce((sum, candidate) => sum + candidate.matchScore, 0) / totalCandidates
+          visibleCandidates.reduce((sum, candidate) => sum + candidate.matchScore, 0) /
+            totalCandidates
         );
 
   return (
@@ -77,15 +87,19 @@ export default function CandidatesWorkspace({
               <Badge variant="primary">Active job</Badge>
               <span className="text-sm font-semibold text-slate-950">{job.title}</span>
               <Badge variant="demo">Demo data</Badge>
+              {sessionApplications.length > 0 && (
+                <Badge variant="success">{sessionApplications.length} session uploads</Badge>
+              )}
             </div>
             <p className="mt-2 text-sm leading-6 text-slate-600">
               Each row is an application for this job. If the same person applies to another job in
-              a future phase, that would be a separate application record.
+              a future phase, that would be a separate application record. Session-uploaded records
+              are created in browser state and are not persisted.
             </p>
           </CardContent>
         </Card>
 
-        <CandidateListClient candidates={candidates} candidateBaseHref={candidateBaseHref} />
+        <CandidateListClient candidates={visibleCandidates} candidateBaseHref={candidateBaseHref} />
       </div>
     </div>
   );
